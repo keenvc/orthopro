@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Navigation from '../components/Navigation';
 import { getPatients } from '@/lib/supabase';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { Search, Download } from 'lucide-react';
+import { Search, Download, Filter, User } from 'lucide-react';
 import { exportToCSV } from '@/lib/csv-export';
 
 export default function PatientsPage() {

@@ -156,7 +156,7 @@ export default function Home() {
 }
 
 function StatCard({ title, value, icon, color, href }: any) {
-  const colorClasses = {
+  const colorClasses: Record<string, string> = {
     blue: 'bg-blue-500',
     purple: 'bg-purple-500',
     green: 'bg-green-500',
