@@ -114,7 +114,7 @@ function normalizeDeliveryMethod(method: string): string | null {
 function normalizeAutoPaymentSource(source: string): string | null {
   if (!source || source.trim() === '' || source === 'None') return null;
   
-  const sourceMap: Record<string, string> = {
+  const sourceMap: Record<string, string | null> = {
     'Card on File': 'card_on_file',
     'Bank Account': 'bank_account',
     'None': null
