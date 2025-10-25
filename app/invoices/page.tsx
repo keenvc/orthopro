@@ -14,6 +14,7 @@ export default function InvoicesPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [processorFilter, setProcessorFilter] = useState('all');
 
   useEffect(() => {
     async function loadInvoices() {
@@ -46,13 +47,20 @@ export default function InvoicesPage() {
       filtered = filtered.filter(invoice => invoice.status === statusFilter);
     }
 
+    // Apply processor filter
+    if (processorFilter !== 'all') {
+      filtered = filtered.filter(invoice => (invoice.processor || 'inbox_health') === processorFilter);
+    }
+
     setFilteredInvoices(filtered);
-  }, [searchTerm, statusFilter, invoices]);
+  }, [searchTerm, statusFilter, processorFilter, invoices]);
 
   const handleExportCSV = () => {
     const exportData = filteredInvoices.map(inv => ({
       patient_name: `${inv.patients?.first_name} ${inv.patients?.last_name}`,
       practice: inv.practices?.name || '',
+      processor: inv.processor || 'inbox_health',
+      invoice_title: inv.invoice_title || '',
       date_of_service: inv.date_of_service,
       total_amount: inv.total_amount_cents / 100,
       paid_amount: inv.paid_amount_cents / 100,
@@ -63,6 +71,8 @@ export default function InvoicesPage() {
     const columns = [
       { key: 'patient_name', label: 'Patient' },
       { key: 'practice', label: 'Practice' },
+      { key: 'processor', label: 'Processor' },
+      { key: 'invoice_title', label: 'Description' },
       { key: 'date_of_service', label: 'Date of Service' },
       { key: 'total_amount', label: 'Total ($)' },
       { key: 'paid_amount', label: 'Paid ($)' },
@@ -127,6 +137,15 @@ export default function InvoicesPage() {
             <div className="flex items-center gap-2">
               <Filter className="text-gray-400 w-5 h-5" />
               <select
+                value={processorFilter}
+                onChange={(e) => setProcessorFilter(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="all">All Processors</option>
+                <option value="inbox_health">Inbox Health</option>
+                <option value="square">Square</option>
+              </select>
+              <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -137,11 +156,12 @@ export default function InvoicesPage() {
                 <option value="paid">Paid</option>
               </select>
             </div>
-            {(searchTerm || statusFilter !== 'all') && (
+            {(searchTerm || statusFilter !== 'all' || processorFilter !== 'all') && (
               <button
                 onClick={() => {
                   setSearchTerm('');
                   setStatusFilter('all');
+                  setProcessorFilter('all');
                 }}
                 className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
               >
@@ -159,7 +179,9 @@ export default function InvoicesPage() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Patient</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date of Service</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Processor</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Paid</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Balance</th>
@@ -167,37 +189,56 @@ export default function InvoicesPage() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredInvoices.map((invoice) => (
-                <tr key={invoice.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      {invoice.patients?.first_name} {invoice.patients?.last_name}
-                    </div>
-                    <div className="text-sm text-gray-500">{invoice.practices?.name}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatDate(invoice.date_of_service)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatCurrency(invoice.total_amount_cents)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">
-                    {formatCurrency(invoice.paid_amount_cents)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">
-                    {formatCurrency(invoice.balance_cents)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      invoice.status === 'paid' ? 'bg-green-100 text-green-800' :
-                      invoice.status === 'overdue' ? 'bg-red-100 text-red-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {invoice.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {filteredInvoices.map((invoice) => {
+                const processor = invoice.processor || 'inbox_health';
+                const processorLabel = processor === 'square' ? 'Square' : 'Inbox Health';
+                const processorColor = processor === 'square' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800';
+                
+                return (
+                  <tr key={invoice.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {invoice.patients?.first_name} {invoice.patients?.last_name}
+                      </div>
+                      <div className="text-sm text-gray-500">{invoice.practices?.name}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${processorColor}`}>
+                        {processorLabel}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-900">
+                        {invoice.invoice_title || invoice.practices?.name || '-'}
+                      </div>
+                      {invoice.invoice_number && (
+                        <div className="text-xs text-gray-500">{invoice.invoice_number}</div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {formatDate(invoice.date_of_service || invoice.invoice_date)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {formatCurrency(invoice.amount_cents || invoice.total_amount_cents)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">
+                      {formatCurrency((invoice.amount_cents || invoice.total_amount_cents) - (invoice.balance_cents || 0))}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">
+                      {formatCurrency(invoice.balance_cents)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        invoice.status === 'paid' ? 'bg-green-100 text-green-800' :
+                        invoice.status === 'overdue' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {invoice.status}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

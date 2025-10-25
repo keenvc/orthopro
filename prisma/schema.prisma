@@ -28,6 +28,8 @@ model patients {
   state              String?
   zip_code           String?
   balance_cents      Int              @default(0)
+  square_customer_id String?
+  external_ids       Json?
   created_at         DateTime         @default(now()) @db.Timestamptz
   updated_at         DateTime         @updatedAt @db.Timestamptz
   
@@ -38,6 +40,7 @@ model patients {
   @@index([inbox_health_id])
   @@index([email])
   @@index([last_name])
+  @@index([square_customer_id])
 }
 
 model practices {
@@ -76,6 +79,18 @@ model invoices {
   amount_cents          Int
   balance_cents         Int
   status                String?
+  processor             String            @default("inbox_health")
+  processor_invoice_id  String?
+  processor_metadata    Json?
+  invoice_title         String?
+  invoice_date          DateTime?         @db.Date
+  last_payment_date     DateTime?         @db.Date
+  time_zone             String?
+  delivery_method       String?
+  recurring_series_id   String?
+  installments_count    Int?
+  tip_amount_cents      Int?              @default(0)
+  auto_payment_source   String?
   created_at            DateTime          @default(now()) @db.Timestamptz
   updated_at            DateTime          @updatedAt @db.Timestamptz
   
@@ -89,6 +104,11 @@ model invoices {
   @@index([inbox_health_id])
   @@index([invoice_number])
   @@index([date_of_service])
+  @@index([processor])
+  @@index([processor_invoice_id])
+  @@index([status])
+  @@index([due_date])
+  @@unique([processor, processor_invoice_id])
 }
 
 model invoice_line_items {
@@ -115,6 +135,9 @@ model payments {
   payment_method    String?
   payment_date      DateTime           @db.Date
   status            String?
+  processor         String?            @default("inbox_health")
+  processor_payment_id String?
+  tip_amount_cents  Int?               @default(0)
   created_at        DateTime           @default(now()) @db.Timestamptz
   
   patient           patients           @relation(fields: [patient_id], references: [id], onDelete: Cascade)
@@ -123,6 +146,7 @@ model payments {
   @@index([patient_id])
   @@index([inbox_health_id])
   @@index([payment_date])
+  @@index([processor])
 }
 
 model invoice_payments {
