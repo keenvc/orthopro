@@ -70,8 +70,13 @@ export default function Navigation({ userEmail = 'nmurray@gmail.com' }: Navigati
       <header className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">AdvancedCare - Remits & Bills</h1>
+            <div className="flex items-center gap-3">
+              <img 
+                src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBhUIBwgWFhUXGSAZGBgYFxsgHxscHR0dHR0dHR8eJy0nHiMlHx0fKj0oJikrLi4uHSY1RDMuOCguLisBCgoKDg0OGhAQGzUlICUvNzIxNjYwNTgzNjAtMS02LjUtNTAtLS0wLy8wLi0tLy0uLS0vMC0tLy81LTYtLS0tLf/AABEIAMgAyAMBEQACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAAAwYCBAUBB//EADwQAAIBAwIDBgQEAgkFAAAAAAABAgMEEQUSBiExEwUHgcgYFxcycxNDNXOdEQA6U5KdJVNygpKtM0RWJz/QADIQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEwUHgcgYFRcycxNDNXOdEQA8IQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEgUHgYFxcycxNDNXOdEQA8IQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEgUHgYFxcycxNDNXOdEQA8IQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEgUHgYFxcycxNDNXOdEQA8IQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEgUHgYFxcycxNDNXOdEQA8" 
+                alt="AdvancedCare Logo" 
+                className="h-8 w-auto" 
+              />
+              <h1 className="text-2xl font-bold text-gray-900">AdvancedCare - Centered Clinic</h1>
             </div>
             <div className="flex items-center gap-4">
               {/* Status Indicator */}

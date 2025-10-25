@@ -47,10 +47,14 @@ export default function LoginPage() {
       <div className="max-w-md w-full">
         {/* Logo/Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
-            <Webhook className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center mb-4">
+            <img 
+              src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBhUIBwgWFhUXGSAZGBgYFxsgHxscHR0dHR0dHR8eJy0nHiMlHx0fKj0oJikrLi4uHSY1RDMuOCguLisBCgoKDg0OGhAQGzUlICUvNzIxNjYwNTgzNjAtMS02LjUtNTAtLS0wLy8wLi0tLy0uLS0vMC0tLy81LTYtLS0tLf/AABEIAMgAyAMBEQACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAAAwYCBAUBB//EADwQAAIBAwIDBgQEAgkFAAAAAAABAgMEEQUSBiExEwUHgcgYFxcycxNDNXOdEQA6U5KdJVNygpKtM0RWJz/QADIQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEwUHgcgYFRcycxNDNXOdEQA8IQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEgUHgYFxcycxNDNXOdEQA8IQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEgUHgYFxcycxNDNXOdEQA8IQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEgUHgYFxcycxNDNXOdEQA8IQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEgUHgYFxcycxNDNXOdEQA8" 
+              alt="AdvancedCare Logo" 
+              className="h-16 w-auto" 
+            />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Inbox Health</h1>
+          <h1 className="text-3xl font-bold text-gray-900">AdvancedCare - Centered Clinic</h1>
           <p className="text-gray-600 mt-2">Integration Dashboard</p>
         </div>
 
