@@ -198,10 +198,17 @@ export async function getSurveyTrends(patientId: string, surveyType: string) {
 export async function getClinicNoteStats(clinicId: string = 'centered-one') {
   const { data, error } = await supabase
     .from('clinical_notes')
-    .select('note_type', { count: 'exact' })
-    .eq('clinic_id', clinicId)
-    .group_by('note_type');
+    .select('note_type')
+    .eq('clinic_id', clinicId);
 
   if (error) throw error;
-  return data;
+  
+  // Group by note_type manually
+  const stats = data?.reduce((acc: any, note: any) => {
+    const type = note.note_type || 'unknown';
+    acc[type] = (acc[type] || 0) + 1;
+    return acc;
+  }, {});
+  
+  return Object.entries(stats || {}).map(([note_type, count]) => ({ note_type, count }));
 }

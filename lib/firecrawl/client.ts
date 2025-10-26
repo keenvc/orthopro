@@ -92,11 +92,11 @@ export async function crawlWebsite(baseUrl: string, options?: {
       }
     });
 
-    if (!result.success) {
+    if (!result || !(result as any).success) {
       throw new Error('Crawl failed');
     }
 
-    return (result.data || []).map((page: any) => ({
+    return ((result as any).data || []).map((page: any) => ({
       url: page.url || baseUrl,
       markdown: page.markdown || '',
       html: page.html,

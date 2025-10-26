@@ -90,7 +90,7 @@ function parseBusinessInfo(markdown: string, metadata: any): CenteredBusinessInf
 
   // Extract non-discrimination policy
   let nonDiscriminationPolicy = '';
-  const policyMatch = markdown.match(/NON-DISCRIMINATION.*?POLICY(.*?)(?=##|\n\n)/s);
+  const policyMatch = markdown.match(/NON-DISCRIMINATION.*?POLICY([\s\S]*?)(?=##|\n\n)/);
   if (policyMatch) {
     nonDiscriminationPolicy = policyMatch[1].trim();
   }
