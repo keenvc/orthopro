@@ -72,7 +72,7 @@ export default function Navigation({ userEmail = 'nmurray@gmail.com' }: Navigati
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img 
-                src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBhUIBwgWFhUXGSAZGBgYFxsgHxscHR0dHR0dHR8eJy0nHiMlHx0fKj0oJikrLi4uHSY1RDMuOCguLisBCgoKDg0OGhAQGzUlICUvNzIxNjYwNTgzNjAtMS02LjUtNTAtLS0wLy8wLi0tLy0uLS0vMC0tLy81LTYtLS0tLf/AABEIAMgAyAMBEQACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAAAwYCBAUBB//EADwQAAIBAwIDBgQEAgkFAAAAAAABAgMEEQUSBiExEwUHgcgYFxcycxNDNXOdEQA6U5KdJVNygpKtM0RWJz/QADIQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEwUHgcgYFRcycxNDNXOdEQA8IQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEgUHgYFxcycxNDNXOdEQA8IQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEgUHgYFxcycxNDNXOdEQA8IQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEgUHgYFxcycxNDNXOdEQA8IQAAIBAwIDBgQEAgkFAAAAAAABAgMEEgUSBiExEgUHgYFxcycxNDNXOdEQA8" 
+                src="https://advancedcare.com/lovable-uploads/76b12c1f-21c2-4dce-bd93-b74bb2fcf46a.png" 
                 alt="AdvancedCare Logo" 
                 className="h-8 w-auto" 
               />
