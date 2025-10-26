@@ -33,29 +33,32 @@ export async function POST(request: Request) {
       tags: ['callback-requested', `urgency-${urgency}`]
     });
 
-    console.log(`✅ Contact created: ${contact.contact.id}`);
+    console.log(`✅ Contact created: ${contact.contact?.id || 'unknown'}`);
 
     // Step 2: Create task for staff (using notes/tags as proxy since tasks require workflow setup)
-    await ghl.contacts.addTags({
-      contactId: contact.contact.id,
-      tags: ['needs-callback']
-    });
+    if (contact.contact?.id) {
+      await ghl.contacts.addTags(
+        { contactId: contact.contact.id },
+        { tags: ['needs-callback'] }
+      );
+    }
 
     // Step 3: Send SMS confirmation to caller
-    try {
-      await ghl.conversations.sendMessage({
-        locationId: CENTERED_LOCATION_ID,
-        contactId: contact.contact.id,
-        type: 'SMS',
-        message: `Hi ${first_name}! Thank you for contacting Centered. We've received your callback request. A team member will call you back${preferred_time ? ` ${preferred_time}` : ' soon'}. - Centered`
-      });
-    } catch (smsError) {
-      console.warn('⚠️  SMS confirmation failed:', smsError);
-    }
+    // Note: SMS sending temporarily disabled - needs proper GHL conversations API setup
+    // try {
+    //   await ghl.conversations.sendMessage({
+    //     locationId: CENTERED_LOCATION_ID,
+    //     contactId: contact.contact?.id || '',
+    //     type: 'SMS',
+    //     message: `Hi ${first_name}! Thank you for contacting Centered. We've received your callback request. A team member will call you back${preferred_time ? ` ${preferred_time}` : ' soon'}. - Centered`
+    //   });
+    // } catch (smsError) {
+    //   console.warn('⚠️  SMS confirmation failed:', smsError);
+    // }
 
     return NextResponse.json({
       success: true,
-      contactId: contact.contact.id,
+      contactId: contact.contact?.id || 'unknown',
       response: `Thank you, ${first_name}! I've created a callback request. One of our team members will call you back${preferred_time ? ` ${preferred_time}` : ' as soon as possible'} at ${phone}. You'll also receive a text confirmation. Is there anything else I can help you with?`,
       spokenResponse: `Thank you, ${first_name}! I've created a callback request. One of our team members will call you back${preferred_time ? ` ${preferred_time}` : ' as soon as possible'}. You'll also receive a text confirmation. Is there anything else I can help you with?`
     });

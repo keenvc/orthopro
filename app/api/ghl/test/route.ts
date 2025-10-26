@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     if (method === 'direct' || method === 'both') {
       const ghl = getGHLClient();
       
-      const locations = await ghl.locations.searchLocations();
+      const locations = await ghl.locations.searchLocations({});
       
       results.tests.directAPI = {
         status: 'success',

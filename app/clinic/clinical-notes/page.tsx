@@ -37,7 +37,7 @@ export default function ClinicalNotesPage() {
       filtered = filtered.filter(note =>
         `${note.patients?.first_name} ${note.patients?.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
         note.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        note.cpt_codes?.some(code => code.includes(searchTerm))
+        note.cpt_codes?.some((code: string) => code.includes(searchTerm))
       );
     }
 
@@ -48,7 +48,7 @@ export default function ClinicalNotesPage() {
     setFilteredNotes(filtered);
   }, [searchTerm, noteTypeFilter, notes]);
 
-  const noteTypes = [...new Set(notes.map(n => n.note_type))];
+  const noteTypes = Array.from(new Set(notes.map(n => n.note_type)));
 
   if (loading) {
     return (
@@ -126,7 +126,7 @@ export default function ClinicalNotesPage() {
                     </div>
                     <p className="text-gray-600 mb-3">{note.title}</p>
                     <div className="flex flex-wrap gap-2 mb-3">
-                      {note.cpt_codes?.map((code, idx) => (
+                      {note.cpt_codes?.map((code: string, idx: number) => (
                         <span key={idx} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
                           {code}
                         </span>

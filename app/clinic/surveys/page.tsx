@@ -52,8 +52,8 @@ export default function SurveysPage() {
     setFilteredSurveys(filtered);
   }, [searchTerm, surveyTypeFilter, severityFilter, surveys]);
 
-  const surveyTypes = [...new Set(surveys.map(s => s.survey_type))];
-  const severityLevels = [...new Set(surveys.map(s => s.severity_level))].filter(Boolean);
+  const surveyTypes = Array.from(new Set(surveys.map(s => s.survey_type)));
+  const severityLevels = Array.from(new Set(surveys.map(s => s.severity_level))).filter(Boolean);
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {

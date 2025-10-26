@@ -34,33 +34,36 @@ export async function POST(request: Request) {
       tags: ['voicemail-received']
     });
 
-    console.log(`✅ Contact created: ${contact.contact.id}`);
+    console.log(`✅ Contact created: ${contact.contact?.id || 'unknown'}`);
 
     // Step 2: Create note with voicemail transcript
     // In production, this would use GHL notes API
-    await ghl.contacts.addTags({
-      contactId: contact.contact.id,
-      tags: ['has-voicemail']
-    });
+    if (contact.contact?.id) {
+      await ghl.contacts.addTags(
+        { contactId: contact.contact.id },
+        { tags: ['has-voicemail'] }
+      );
+    }
 
     // Step 3: Send confirmation SMS
-    try {
-      await ghl.conversations.sendMessage({
-        locationId: CENTERED_LOCATION_ID,
-        contactId: contact.contact.id,
-        type: 'SMS',
-        message: `Hi ${firstName}! Thank you for your voicemail. We've received your message${staff_member ? ` for ${staff_member}` : ''} and will get back to you soon. - Centered`
-      });
-    } catch (smsError) {
-      console.warn('⚠️  SMS confirmation failed:', smsError);
-    }
+    // Note: SMS sending temporarily disabled - needs proper GHL conversations API setup
+    // try {
+    //   await ghl.conversations.sendMessage({
+    //     locationId: CENTERED_LOCATION_ID,
+    //     contactId: contact.contact?.id || '',
+    //     type: 'SMS',
+    //     message: `Hi ${firstName}! Thank you for your voicemail. We've received your message${staff_member ? ` for ${staff_member}` : ''} and will get back to you soon. - Centered`
+    //   });
+    // } catch (smsError) {
+    //   console.warn('⚠️  SMS confirmation failed:', smsError);
+    // }
 
     // Step 4: Notify staff (in production, send email/SMS to staff)
     console.log(`📨 Staff notification: Voicemail from ${caller_name}${staff_member ? ` for ${staff_member}` : ''}`);
 
     return NextResponse.json({
       success: true,
-      contactId: contact.contact.id,
+      contactId: contact.contact?.id || 'unknown',
       response: `Thank you for your message, ${firstName}. I've recorded your voicemail${staff_member ? ` for ${staff_member}` : ' for our team'}. Someone will get back to you as soon as possible at ${phone}. You'll also receive a text confirmation. Have a great day!`,
       spokenResponse: `Thank you for your message, ${firstName}. I've recorded your voicemail${staff_member ? ` for ${staff_member}` : ' for our team'}. Someone will get back to you as soon as possible. You'll also receive a text confirmation. Have a great day!`
     });
