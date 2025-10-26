@@ -391,3 +391,79 @@ model remittance_adjustments {
   @@index([claim_line_id])
   @@index([group_code, reason_code])
 }
+
+// ============================================
+// OSMIND SYNC TABLES
+// ============================================
+
+model osmind_patients {
+  id              String     @id @default(uuid()) @db.Uuid
+  osmind_id       String     @unique
+  first_name      String
+  last_name       String
+  date_of_birth   DateTime?  @db.Date
+  email           String?
+  phone           String?
+  raw_data        Json?
+  synced_at       DateTime   @default(now()) @db.Timestamptz
+  last_updated    DateTime   @updatedAt @db.Timestamptz
+  created_at      DateTime   @default(now()) @db.Timestamptz
+  
+  appointments    osmind_appointments[]
+  insurance_cards osmind_insurance_cards[]
+  
+  @@index([osmind_id])
+  @@index([first_name, last_name])
+  @@index([email])
+  @@index([synced_at])
+}
+
+model osmind_appointments {
+  id              String     @id @default(uuid()) @db.Uuid
+  osmind_id       String     @unique
+  patient_id      String     @db.Uuid
+  appointment_date DateTime   @db.Timestamptz
+  appointment_time String?
+  provider_id     String?
+  provider_name   String?
+  room_id         String?
+  room_name       String?
+  status          String?
+  notes           String?
+  raw_data        Json?
+  synced_at       DateTime   @default(now()) @db.Timestamptz
+  last_updated    DateTime   @updatedAt @db.Timestamptz
+  created_at      DateTime   @default(now()) @db.Timestamptz
+  
+  patient         osmind_patients @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  
+  @@index([patient_id])
+  @@index([osmind_id])
+  @@index([appointment_date])
+  @@index([provider_id])
+  @@index([room_id])
+  @@index([status])
+}
+
+model osmind_insurance_cards {
+  id              String     @id @default(uuid()) @db.Uuid
+  osmind_id       String     @unique
+  patient_id      String     @db.Uuid
+  name            String?
+  member_id       String?
+  group_number    String?
+  plan_name       String?
+  carrier_name    String?
+  image_url       String?
+  raw_data        Json?
+  synced_at       DateTime   @default(now()) @db.Timestamptz
+  last_updated    DateTime   @updatedAt @db.Timestamptz
+  created_at      DateTime   @default(now()) @db.Timestamptz
+  
+  patient         osmind_patients @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  
+  @@index([patient_id])
+  @@index([osmind_id])
+  @@index([member_id])
+  @@index([synced_at])
+}
