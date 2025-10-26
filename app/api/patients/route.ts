@@ -122,6 +122,19 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    // Try using Render database first, fall back to Supabase
+    try {
+      const { getPatients } = await import('@/lib/database');
+      const patients = await getPatients();
+      return NextResponse.json({
+        patients,
+        total: patients.length,
+      });
+    } catch (dbError) {
+      // Fall back to Supabase if database not available
+      console.log('Database not available, falling back to Supabase');
+    }
+
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');

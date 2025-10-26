@@ -36,6 +36,9 @@ model patients {
   invoices           invoices[]
   payments           payments[]
   patient_plans      patient_plans[]
+  square_transactions square_transactions[]
+  clinical_notes     clinical_notes[]
+  patient_surveys    patient_surveys[]
   
   @@index([inbox_health_id])
   @@index([email])
@@ -178,6 +181,80 @@ model patient_plans {
   patient         patients   @relation(fields: [patient_id], references: [id], onDelete: Cascade)
   
   @@index([patient_id])
+}
+
+model square_transactions {
+  id                String     @id @default(uuid()) @db.Uuid
+  patient_id        String     @db.Uuid
+  square_id         String?    @unique
+  order_id          String?
+  amount_cents      Int
+  tip_amount_cents  Int        @default(0)
+  total_cents       Int
+  currency          String     @default("USD")
+  status            String?
+  payment_method    String?
+  receipt_url       String?
+  transaction_date  DateTime   @db.Timestamptz
+  created_at        DateTime   @default(now()) @db.Timestamptz
+  updated_at        DateTime   @updatedAt @db.Timestamptz
+  
+  patient           patients   @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  
+  @@index([patient_id])
+  @@index([square_id])
+  @@index([transaction_date])
+  @@index([status])
+}
+
+// ============================================
+// CLINIC DATA TABLES
+// ============================================
+
+model clinical_notes {
+  id              String     @id @default(uuid()) @db.Uuid
+  patient_id      String     @db.Uuid
+  clinic_id       String     @default("centered-one")
+  note_type       String
+  title           String
+  note_date       DateTime   @db.Date
+  cpt_codes       String[]
+  is_signed       Boolean    @default(false)
+  source_system   String?    @default("centered-osmind")
+  sync_status     String?    @default("synced")
+  created_at      DateTime   @default(now()) @db.Timestamptz
+  updated_at      DateTime   @updatedAt @db.Timestamptz
+  
+  patient         patients   @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  
+  @@index([patient_id])
+  @@index([clinic_id])
+  @@index([note_date])
+  @@index([note_type])
+}
+
+model patient_surveys {
+  id              String     @id @default(uuid()) @db.Uuid
+  patient_id      String     @db.Uuid
+  clinic_id       String     @default("centered-one")
+  survey_type     String
+  survey_name     String
+  score           Int
+  max_score       Int?
+  severity_level  String?
+  completed_date  DateTime   @db.Timestamptz
+  source_system   String?    @default("centered-osmind")
+  sync_status     String?    @default("synced")
+  created_at      DateTime   @default(now()) @db.Timestamptz
+  updated_at      DateTime   @updatedAt @db.Timestamptz
+  
+  patient         patients   @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  
+  @@index([patient_id])
+  @@index([clinic_id])
+  @@index([completed_date])
+  @@index([survey_type])
+  @@index([severity_level])
 }
 
 model webhook_events {

@@ -6,6 +6,7 @@ import { getPatients } from '@/lib/supabase';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { Search, Download, Filter, User } from 'lucide-react';
 import { exportToCSV } from '@/lib/csv-export';
+import Link from 'next/link';
 
 export default function PatientsPage() {
   const [patients, setPatients] = useState<any[]>([]);
@@ -142,22 +143,23 @@ export default function PatientsPage() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredPatients.map((patient) => (
-                <tr key={patient.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {patient.first_name} {patient.last_name}
+                <Link key={patient.id} href={`/patients/${patient.id}`}>
+                  <tr className="hover:bg-gray-50 cursor-pointer transition">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                          <User className="w-5 h-5 text-blue-600" />
                         </div>
-                        <div className="text-sm text-gray-500">
-                          MRN: {patient.health_record_id || 'N/A'}
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">
+                            {patient.first_name} {patient.last_name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            MRN: {patient.health_record_id || 'N/A'}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
+                    </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{patient.email}</div>
                     <div className="text-sm text-gray-500">{patient.cell_phone}</div>
@@ -178,21 +180,22 @@ export default function PatientsPage() {
                       {patient.billing_status || 'current'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center gap-1 text-xs ${
-                      patient.sync_status === 'synced' ? 'text-green-600' :
-                      patient.sync_status === 'pending' ? 'text-yellow-600' :
-                      'text-gray-400'
-                    }`}>
-                      <div className={`w-2 h-2 rounded-full ${
-                        patient.sync_status === 'synced' ? 'bg-green-600' :
-                        patient.sync_status === 'pending' ? 'bg-yellow-600' :
-                        'bg-gray-400'
-                      }`}></div>
-                      {patient.sync_status || 'not synced'}
-                    </span>
-                  </td>
-                </tr>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center gap-1 text-xs ${
+                        patient.sync_status === 'synced' ? 'text-green-600' :
+                        patient.sync_status === 'pending' ? 'text-yellow-600' :
+                        'text-gray-400'
+                      }`}>
+                        <div className={`w-2 h-2 rounded-full ${
+                          patient.sync_status === 'synced' ? 'bg-green-600' :
+                          patient.sync_status === 'pending' ? 'bg-yellow-600' :
+                          'bg-gray-400'
+                        }`}></div>
+                        {patient.sync_status || 'not synced'}
+                      </span>
+                    </td>
+                  </tr>
+                </Link>
               ))}
             </tbody>
           </table>

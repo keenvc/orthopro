@@ -30,7 +30,18 @@ export async function getPatientById(id: string) {
         include: { line_items: true }
       },
       patient_plans: true,
-      payments: true
+      payments: true,
+      square_transactions: {
+        orderBy: { transaction_date: 'desc' }
+      },
+      clinical_notes: {
+        orderBy: { note_date: 'desc' },
+        take: 5
+      },
+      patient_surveys: {
+        orderBy: { completed_date: 'desc' },
+        take: 5
+      }
     }
   });
 }
@@ -201,6 +212,61 @@ export async function getLatestWebhooks(since: Date) {
     },
     orderBy: { received_at: 'desc' }
   });
+}
+
+// ============================================
+// SQUARE TRANSACTION FUNCTIONS
+// ============================================
+
+export async function getSquareTransactionsByPatient(patientId: string) {
+  return await prisma.square_transactions.findMany({
+    where: { patient_id: patientId },
+    orderBy: { transaction_date: 'desc' }
+  });
+}
+
+export async function createSquareTransaction(data: any) {
+  return await prisma.square_transactions.create({
+    data: {
+      patient_id: data.patient_id,
+      square_id: data.square_id,
+      order_id: data.order_id,
+      amount_cents: data.amount_cents,
+      tip_amount_cents: data.tip_amount_cents || 0,
+      total_cents: (data.amount_cents || 0) + (data.tip_amount_cents || 0),
+      currency: data.currency || 'USD',
+      status: data.status,
+      payment_method: data.payment_method,
+      receipt_url: data.receipt_url,
+      transaction_date: data.transaction_date || new Date()
+    }
+  });
+}
+
+// ============================================
+// CLINIC DATA FUNCTIONS
+// ============================================
+
+export async function getClinicalNotesByPatient(patientId: string) {
+  return await prisma.clinical_notes.findMany({
+    where: { patient_id: patientId },
+    orderBy: { note_date: 'desc' }
+  });
+}
+
+export async function getPatientSurveysByPatient(patientId: string) {
+  return await prisma.patient_surveys.findMany({
+    where: { patient_id: patientId },
+    orderBy: { completed_date: 'desc' }
+  });
+}
+
+export async function createClinicalNote(data: any) {
+  return await prisma.clinical_notes.create({ data });
+}
+
+export async function createPatientSurvey(data: any) {
+  return await prisma.patient_surveys.create({ data });
 }
 
 // ============================================
