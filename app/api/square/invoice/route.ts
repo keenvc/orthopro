@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Client, Environment } from 'square';
 import nodemailer from 'nodemailer';
+import twilio from 'twilio';
 
 // Initialize Square client
 const squareClient = new Client({
@@ -223,10 +224,32 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // TODO: Implement SMS sending via Twilio or similar service
+    // Send SMS via Twilio if requested
     if (send_text && patient_phone) {
-      console.log('SMS sending not yet implemented for:', patient_phone);
-      // You can integrate Twilio here
+      try {
+        // Check if Twilio is configured
+        if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN || !process.env.TWILIO_PHONE_NUMBER) {
+          console.error('Twilio credentials not configured');
+        } else {
+          const twilioClient = twilio(
+            process.env.TWILIO_ACCOUNT_SID,
+            process.env.TWILIO_AUTH_TOKEN
+          );
+
+          const smsMessage = `Hi ${patient_name}, your co-pay invoice for $${(amount).toFixed(2)} is ready. View and pay here: ${invoiceUrl} - ${process.env.CLINIC_NAME || 'Advanced Care'}`;
+
+          await twilioClient.messages.create({
+            body: smsMessage,
+            from: process.env.TWILIO_PHONE_NUMBER,
+            to: patient_phone,
+          });
+
+          console.log('SMS sent successfully to:', patient_phone);
+        }
+      } catch (smsError) {
+        console.error('Error sending SMS:', smsError);
+        // Don't fail the entire request if SMS fails
+      }
     }
 
     return NextResponse.json({
@@ -236,7 +259,7 @@ export async function POST(req: NextRequest) {
       invoice_number: publishedInvoice?.invoiceNumber,
       amount: amount,
       email_sent: send_email && patient_email ? true : false,
-      text_sent: false, // Update when SMS is implemented
+      text_sent: send_text && patient_phone && process.env.TWILIO_ACCOUNT_SID ? true : false,
     });
 
   } catch (error: any) {
