@@ -1,7 +1,7 @@
 'use client';
 
 import { X, CheckCircle, XCircle, Calendar, DollarSign, Shield, User, Building2 } from 'lucide-react';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatCurrency, formatDate } from '../lib/utils';
 
 interface VOBModalProps {
   isOpen: boolean;
