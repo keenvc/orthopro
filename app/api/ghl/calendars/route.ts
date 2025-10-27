@@ -10,14 +10,12 @@ import { CalendarManagementService } from '../../../../lib/ghl/calendar-service'
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-
-const calendarService = new CalendarManagementService();
-
 /**
  * GET - List all calendars in Centered subaccount
  */
 export async function GET(request: Request) {
   try {
+    const calendarService = new CalendarManagementService();
     const calendars = await calendarService.getCalendars();
 
     return NextResponse.json({
@@ -38,6 +36,7 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
   try {
+    const calendarService = new CalendarManagementService();
     const { userId, firstName, lastName, slug } = await request.json();
 
     if (!userId || !firstName || !lastName || !slug) {

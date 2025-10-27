@@ -10,15 +10,13 @@ import { CalendarManagementService } from '../../../../../lib/ghl/calendar-servi
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-
-const calendarService = new CalendarManagementService();
-
 /**
  * POST - Create multiple calendars
  * Body: { users: Array<{userId, firstName, lastName, slug}> }
  */
 export async function POST(request: Request) {
   try {
+    const calendarService = new CalendarManagementService();
     const { users } = await request.json();
 
     if (!Array.isArray(users) || users.length === 0) {
