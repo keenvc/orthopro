@@ -19,12 +19,15 @@ export function getSupabaseClient() {
   return supabaseInstance;
 }
 
-// For backward compatibility - but this will throw if env vars not set
-export const supabase = new Proxy({} as SupabaseClient, {
-  get(target, prop) {
-    return getSupabaseClient()[prop as keyof SupabaseClient];
+// For backward compatibility - deprecated, use getSupabaseClient() instead
+export const supabase = {
+  get from() {
+    return getSupabaseClient().from;
+  },
+  get channel() {
+    return getSupabaseClient().channel;
   }
-});
+} as any;
 
 // Database helper functions
 export async function getPatients() {
