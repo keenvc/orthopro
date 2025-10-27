@@ -10,9 +10,6 @@ import { UserManagementService, UserData } from '../../../../../lib/ghl/user-ser
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-
-const userService = new UserManagementService();
-
 /**
  * GET - Get user by ID
  */
@@ -21,6 +18,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    const userService = new UserManagementService();
     const user = await userService.getUser(params.id);
 
     return NextResponse.json({
@@ -43,6 +41,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    const userService = new UserManagementService();
     const updates: Partial<UserData> = await request.json();
     const user = await userService.updateUser(params.id, updates);
 
@@ -67,6 +66,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    const userService = new UserManagementService();
     await userService.deleteUser(params.id);
 
     return NextResponse.json({

@@ -10,14 +10,12 @@ import { UserManagementService, UserData } from '../../../../lib/ghl/user-servic
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-
-const userService = new UserManagementService();
-
 /**
  * GET - List all users in Centered subaccount
  */
 export async function GET(request: Request) {
   try {
+    const userService = new UserManagementService();
     const users = await userService.getUsers();
 
     return NextResponse.json({
@@ -39,6 +37,7 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
   try {
+    const userService = new UserManagementService();
     const userData: UserData = await request.json();
 
     // Validate required fields

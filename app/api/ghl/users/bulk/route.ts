@@ -10,15 +10,13 @@ import { UserManagementService, UserData } from '../../../../../lib/ghl/user-ser
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-
-const userService = new UserManagementService();
-
 /**
  * POST - Create multiple users
  * Body: { users: UserData[] }
  */
 export async function POST(request: Request) {
   try {
+    const userService = new UserManagementService();
     const { users } = await request.json();
 
     if (!Array.isArray(users) || users.length === 0) {

@@ -10,13 +10,11 @@ import { GHLContactService } from '../../../../lib/ghl/contact-service';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-
-const contactService = new GHLContactService();
-
 // GET /api/ghl/contacts?contactId=xxx - Get single contact
 // GET /api/ghl/contacts?query=xxx - Search contacts
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
+  const contactService = new GHLContactService();
+  const { searchParams} = new URL(request.url);
   const contactId = searchParams.get('contactId');
   const query = searchParams.get('query');
   const tags = searchParams.get('tags')?.split(',');
@@ -47,6 +45,7 @@ export async function GET(request: Request) {
 // POST /api/ghl/contacts - Sync patient to GHL
 export async function POST(request: Request) {
   try {
+    const contactService = new GHLContactService();
     const { patientId } = await request.json();
 
     if (!patientId) {
@@ -74,6 +73,7 @@ export async function POST(request: Request) {
 // PUT /api/ghl/contacts - Update contact
 export async function PUT(request: Request) {
   try {
+    const contactService = new GHLContactService();
     const { contactId, updates } = await request.json();
 
     if (!contactId) {
