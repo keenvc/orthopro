@@ -6,11 +6,27 @@ services:
   - type: web
     name: orthopro
     runtime: node
-    region: oregon # Change as needed
-    plan: starter # or standard for production
-    buildCommand: npm install && npx prisma generate && npm run build
+    region: oregon
+    plan: starter
+    # Optimized build command: use npm ci for faster, more reliable installs
+    buildCommand: npm ci --prefer-offline --no-audit && npx prisma generate && npm run build
     startCommand: npm start
     healthCheckPath: /
+    # Build optimization
+    buildFilter:
+      paths:
+        - package-lock.json
+        - package.json
+        - app/**
+        - lib/**
+        - prisma/**
+        - public/**
+        - components/**
+      ignoredPaths:
+        - README.md
+        - "*.md"
+        - .vscode/**
+        - .idea/**
     envVars:
       - key: NODE_ENV
         value: production
