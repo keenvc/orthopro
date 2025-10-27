@@ -1,9 +1,3 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -11,16 +5,9 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true,  // Temporarily ignore type errors for deployment
+    ignoreBuildErrors: true,
   },
-  webpack: (config) => {
-    // Ensure proper module resolution for @ aliases with absolute path
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': path.resolve(__dirname, '.'),
-    };
-    return config;
-  },
+  // Let Next.js handle module resolution with defaults
 };
 
 export default nextConfig;
