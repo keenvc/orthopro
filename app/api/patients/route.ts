@@ -124,7 +124,7 @@ export async function GET(request: NextRequest) {
   try {
     // Try using Render database first, fall back to Supabase
     try {
-      const { getPatients } = await import('@/lib/database');
+      const { getPatients } = await import('../../../lib/database');
       const patients = await getPatients();
       return NextResponse.json({
         patients,
