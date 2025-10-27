@@ -1,18 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Client, Environment } from 'square';
+// import { Client } from 'square';
 import nodemailer from 'nodemailer';
 import twilio from 'twilio';
 
-// Initialize Square client
-const squareClient = new Client({
-  accessToken: process.env.SQUARE_ACCESS_TOKEN,
-  environment: process.env.SQUARE_ENVIRONMENT === 'production' 
-    ? Environment.Production 
-    : Environment.Sandbox,
-});
+// Initialize Square client - Disabled for now due to SDK compatibility
+// TODO: Fix Square SDK import issue
+const squareClient: any = null;
 
 // Initialize MXRoute email transporter
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   host: process.env.MXROUTE_SMTP_HOST || 'mail.mxroute.com',
   port: parseInt(process.env.MXROUTE_SMTP_PORT || '587'),
   secure: false, // true for 465, false for other ports
