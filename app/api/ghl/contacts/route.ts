@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { GHLContactService } from '@/lib/ghl/contact-service';
+import { GHLContactService } from '../../../../lib/ghl/contact-service';
 
 const contactService = new GHLContactService();
 

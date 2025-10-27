@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { UserManagementService, UserData } from '@/lib/ghl/user-service';
+import { UserManagementService, UserData } from '../../../../../lib/ghl/user-service';
 
 const userService = new UserManagementService();
 

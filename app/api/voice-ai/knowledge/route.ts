@@ -6,7 +6,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { queryKnowledgeBase, getCenteredBusinessInfo } from '@/lib/firecrawl/centered-scraper';
+import { queryKnowledgeBase, getCenteredBusinessInfo } from '../../../../lib/firecrawl/centered-scraper';
 
 export async function POST(request: Request) {
   try {

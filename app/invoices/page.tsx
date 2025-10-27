@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Navigation from '../components/Navigation';
-import { getInvoices } from '@/lib/supabase';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { getInvoices } from '../../lib/supabase';
+import { formatCurrency, formatDate } from '../../lib/utils';
 import { ArrowLeft, FileText, Search, Filter, Download } from 'lucide-react';
-import { exportToCSV } from '@/lib/csv-export';
+import { exportToCSV } from '../../lib/csv-export';
 
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<any[]>([]);

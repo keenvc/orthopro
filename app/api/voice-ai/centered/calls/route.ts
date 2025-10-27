@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { VoiceAIService } from '@/lib/ghl/voice-ai-service';
+import { VoiceAIService } from '../../../../../lib/ghl/voice-ai-service';
 
 export async function GET(request: Request) {
   try {

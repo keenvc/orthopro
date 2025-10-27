@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { CalendarManagementService } from '@/lib/ghl/calendar-service';
+import { CalendarManagementService } from '../../../../lib/ghl/calendar-service';
 
 const calendarService = new CalendarManagementService();
 

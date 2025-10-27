@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getGHLClient, GHL_CONFIG } from '@/lib/ghl';
+import { getGHLClient, GHL_CONFIG } from '../../../../../lib/ghl';
 
 export async function POST(request: Request) {
   try {

@@ -4,8 +4,8 @@
  */
 
 import { NextResponse } from 'next/server';
-import { VoiceAIService } from '@/lib/ghl/voice-ai-service';
-import { getCenteredBusinessInfo } from '@/lib/firecrawl/centered-scraper';
+import { VoiceAIService } from '../../../../../lib/ghl/voice-ai-service';
+import { getCenteredBusinessInfo } from '../../../../../lib/firecrawl/centered-scraper';
 
 export async function GET(request: Request) {
   try {

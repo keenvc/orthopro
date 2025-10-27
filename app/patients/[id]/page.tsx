@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import Navigation from '@/app/components/Navigation';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import Navigation from '../../components/Navigation';
+import { formatCurrency, formatDate } from '../../../lib/utils';
 import { ArrowLeft, CreditCard, FileText, TrendingUp, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 

@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Navigation from './components/Navigation';
-import { getDashboardStats, getWebhookEvents } from '@/lib/supabase';
-import { formatCurrency, formatDateTime } from '@/lib/utils';
+import { getDashboardStats, getWebhookEvents } from '../lib/supabase';
+import { formatCurrency, formatDateTime } from '../lib/utils';
 import { Users, FileText, CreditCard, Webhook, DollarSign, Activity } from 'lucide-react';
 
 export default function Home() {

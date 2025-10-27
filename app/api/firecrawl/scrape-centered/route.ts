@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { scrapeCenteredWebsite } from '@/lib/firecrawl/centered-scraper';
+import { scrapeCenteredWebsite } from '../../../../lib/firecrawl/centered-scraper';
 
 export async function POST(request: Request) {
   try {

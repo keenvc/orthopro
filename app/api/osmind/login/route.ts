@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { osmindClient } from '@/lib/osmind/client';
+import { osmindClient } from '../../../../lib/osmind/client';
 
 export async function POST(request: NextRequest) {
   try {

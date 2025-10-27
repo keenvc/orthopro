@@ -4,8 +4,8 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getGHLClient } from '@/lib/ghl';
-import { GHLAIAgent } from '@/lib/ghl/ai-agent';
+import { getGHLClient } from '../../../../lib/ghl';
+import { GHLAIAgent } from '../../../../lib/ghl/ai-agent';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

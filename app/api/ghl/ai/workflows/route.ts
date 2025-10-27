@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { GHLAIAgent } from '@/lib/ghl/ai-agent';
+import { GHLAIAgent } from '../../../../../lib/ghl/ai-agent';
 
 export async function POST(request: Request) {
   try {

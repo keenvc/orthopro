@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Navigation from '../components/Navigation';
-import { supabase } from '@/lib/supabase';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { supabase } from '../../lib/supabase';
+import { formatCurrency, formatDate } from '../../lib/utils';
 import { FileText, DollarSign, Calendar, Building2, Search, Download, ExternalLink, Filter, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
 
 interface RemittanceDocument {

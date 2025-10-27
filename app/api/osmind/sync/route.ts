@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { osmindClient } from '@/lib/osmind/client';
-import { runCompleteSyncxmd } from '@/lib/osmind/sync';
+import { osmindClient } from '../../../../lib/osmind/client';
+import { runCompleteSyncxmd } from '../../../../lib/osmind/sync';
 
 export async function POST(request: NextRequest) {
   try {

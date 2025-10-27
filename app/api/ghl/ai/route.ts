@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { GHLAIAgent } from '@/lib/ghl/ai-agent';
+import { GHLAIAgent } from '../../../../lib/ghl/ai-agent';
 
 // Store agents by session to maintain conversation history
 const agentSessions = new Map<string, GHLAIAgent>();

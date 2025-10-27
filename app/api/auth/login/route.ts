@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateCredentials, setSessionCookie } from '@/lib/auth';
+import { validateCredentials, setSessionCookie } from '../../../../lib/auth';
 
 export async function POST(request: NextRequest) {
   try {

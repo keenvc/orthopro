@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getGHLClient } from '@/lib/ghl';
+import { getGHLClient } from '../../../../../lib/ghl';
 
 const CENTERED_LOCATION_ID = 'tjZJ0hbW7tD1I21hCS41';
 

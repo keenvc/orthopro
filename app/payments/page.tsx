@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Navigation from '../components/Navigation';
-import { getPayments } from '@/lib/supabase';
-import { formatCurrency, formatDateTime } from '@/lib/utils';
+import { getPayments } from '../../lib/supabase';
+import { formatCurrency, formatDateTime } from '../../lib/utils';
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<any[]>([]);

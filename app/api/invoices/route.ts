@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/lib/supabase';
+import { getSupabaseClient } from '../../../lib/supabase';
 
 // Prevent static generation - this route is dynamic only
 export const dynamic = 'force-dynamic';

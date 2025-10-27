@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import Navigation from '../components/Navigation';
-import { getPatients } from '@/lib/supabase';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { getPatients } from '../../lib/supabase';
+import { formatCurrency, formatDate } from '../../lib/utils';
 import { Search, Download, Filter, User, FileCheck } from 'lucide-react';
-import { exportToCSV } from '@/lib/csv-export';
+import { exportToCSV } from '../../lib/csv-export';
 import Link from 'next/link';
-import VOBModal from '@/components/VOBModal';
-import SquareInvoiceModal from '@/components/SquareInvoiceModal';
-import { supabase } from '@/lib/supabase';
+import VOBModal from '../../components/VOBModal';
+import SquareInvoiceModal from '../../components/SquareInvoiceModal';
+import { supabase } from '../../lib/supabase';
 import Image from 'next/image';
 
 export default function PatientsPage() {

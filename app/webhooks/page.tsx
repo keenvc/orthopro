@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Navigation from '../components/Navigation';
-import { getWebhookEvents, subscribeToWebhookEvents } from '@/lib/supabase';
-import { formatDateTime } from '@/lib/utils';
+import { getWebhookEvents, subscribeToWebhookEvents } from '../../lib/supabase';
+import { formatDateTime } from '../../lib/utils';
 import { CheckCircle, Clock, XCircle, Eye } from 'lucide-react';
 
 export default function WebhooksPage() {

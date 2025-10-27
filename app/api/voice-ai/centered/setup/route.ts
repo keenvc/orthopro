@@ -6,7 +6,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { CenteredVoiceAgent } from '@/lib/ghl/centered-voice-agent';
+import { CenteredVoiceAgent } from '../../../../../lib/ghl/centered-voice-agent';
 
 export async function POST(request: Request) {
   try {
