@@ -6,8 +6,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AdvancedCare Remits",
-  description: "Remittance Advice and Billing Management System",
+  title: "OrthoPro",
+  description: "Orthopedic Practice Management System",
 };
 
 export default function RootLayout({

@@ -1,10 +1,10 @@
-# Render Blueprint for AdvancedCare Centered Remits
+# Render Blueprint for OrthoPro
 # https://render.com/docs/blueprint-spec
 
 services:
   # Web Service - Next.js Application
   - type: web
-    name: centered-remits
+    name: orthopro
     runtime: node
     region: oregon # Change as needed
     plan: starter # or standard for production
@@ -15,25 +15,37 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_APP_URL
-        value: https://centered.advancedcare.co
+        value: https://orthopro.advancedcare.co
       - key: DATABASE_URL
         fromDatabase:
-          name: centered-remits-db
+          name: orthopro-db
           property: connectionString
+      - key: CLINIC_NAME
+        value: OrthoPro
+      - key: MXROUTE_EMAIL
+        value: orthopro@advancedcare.co
+      - key: MXROUTE_SMTP_HOST
+        value: heracles.mxrouting.net
+      - key: MXROUTE_SMTP_PORT
+        value: 587
       - key: INBOX_HEALTH_API_KEY
         sync: false # Set manually in Render dashboard
       - key: NEXT_PUBLIC_INBOX_HEALTH_API_URL
         value: https://api.demo.inboxhealth.com/partner/v2
       - key: GROQ_API_KEY
         sync: false # Set manually in Render dashboard
+      - key: MXROUTE_PASSWORD
+        sync: false # Set manually in Render dashboard
+      - key: MXROUTE_USERNAME
+        value: orthopro@advancedcare.co
     domains:
-      - centered.advancedcare.co
+      - orthopro.advancedcare.co
 
 databases:
   # PostgreSQL Database
-  - name: centered-remits-db
-    databaseName: remits
-    user: remits_user
+  - name: orthopro-db
+    databaseName: orthopro
+    user: orthopro_user
     region: oregon # Same region as web service
     plan: starter # or standard for production
     ipAllowList: [] # Empty = allow all (configure as needed)
