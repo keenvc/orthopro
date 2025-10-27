@@ -6,6 +6,11 @@
 import { NextResponse } from 'next/server';
 import { CalendarManagementService } from '../../../../lib/ghl/calendar-service';
 
+// Prevent static generation - this route is dynamic only
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+
 const calendarService = new CalendarManagementService();
 
 /**

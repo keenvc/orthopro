@@ -6,6 +6,11 @@
 import { NextResponse } from 'next/server';
 import { GHLContactService } from '../../../../lib/ghl/contact-service';
 
+// Prevent static generation - this route is dynamic only
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+
 const contactService = new GHLContactService();
 
 // GET /api/ghl/contacts?contactId=xxx - Get single contact

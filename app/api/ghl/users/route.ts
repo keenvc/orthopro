@@ -6,6 +6,11 @@
 import { NextResponse } from 'next/server';
 import { UserManagementService, UserData } from '../../../../lib/ghl/user-service';
 
+// Prevent static generation - this route is dynamic only
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+
 const userService = new UserManagementService();
 
 /**

@@ -7,6 +7,11 @@ import { NextResponse } from 'next/server';
 import { getGHLClient } from '../../../../lib/ghl';
 import { GHLAIAgent } from '../../../../lib/ghl/ai-agent';
 
+// Prevent static generation - this route is dynamic only
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const method = searchParams.get('method') || 'direct'; // 'direct', 'ai', or 'both'

@@ -6,6 +6,11 @@
 import { NextResponse } from 'next/server';
 import { GHLAIAgent } from '../../../../../lib/ghl/ai-agent';
 
+// Prevent static generation - this route is dynamic only
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+
 export async function POST(request: Request) {
   try {
     const { workflow, params } = await request.json();

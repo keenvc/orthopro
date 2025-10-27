@@ -6,6 +6,11 @@
 import { NextResponse } from 'next/server';
 import { GHLAIAgent } from '../../../../lib/ghl/ai-agent';
 
+// Prevent static generation - this route is dynamic only
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+
 // Store agents by session to maintain conversation history
 const agentSessions = new Map<string, GHLAIAgent>();
 
