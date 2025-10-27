@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Navigation from '@/app/components/Navigation';
+import Navigation from '../../components/Navigation';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { AlertCircle, Calendar, FileText, TrendingUp, Users } from 'lucide-react';
 

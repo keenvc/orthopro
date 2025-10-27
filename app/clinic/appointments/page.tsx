@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Navigation from '@/app/components/Navigation';
-import { formatDate } from '@/lib/utils';
+import Navigation from '../../components/Navigation';
+import { formatDate } from '../../../lib/utils';
 import { Search, Calendar, Clock, User, AlertCircle } from 'lucide-react';
 
 export default function AppointmentsPage() {

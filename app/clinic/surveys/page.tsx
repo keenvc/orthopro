@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Navigation from '@/app/components/Navigation';
-import { formatDate } from '@/lib/utils';
+import Navigation from '../../components/Navigation';
+import { formatDate } from '../../../lib/utils';
 import { Search, TrendingUp, AlertCircle, Filter } from 'lucide-react';
 
 export default function SurveysPage() {
