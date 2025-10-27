@@ -1,13 +1,35 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0NTAwNDg2MywiZXhwIjoxOTYwNTgwODYzfQ.placeholder';
+// Lazy initialization - only create client when needed, not at module load time
+let supabaseInstance: SupabaseClient | null = null;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export function getSupabaseClient() {
+  if (supabaseInstance) {
+    return supabaseInstance;
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Supabase environment variables are not configured');
+  }
+
+  supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
+  return supabaseInstance;
+}
+
+// For backward compatibility - but this will throw if env vars not set
+export const supabase = new Proxy({} as SupabaseClient, {
+  get(target, prop) {
+    return getSupabaseClient()[prop as keyof SupabaseClient];
+  }
+});
 
 // Database helper functions
 export async function getPatients() {
-  const { data, error } = await supabase
+  const client = getSupabaseClient();
+  const { data, error } = await client
     .from('patients')
     .select('*')
     .order('created_at', { ascending: false });
@@ -17,7 +39,8 @@ export async function getPatients() {
 }
 
 export async function getPatientById(id: string) {
-  const { data, error } = await supabase
+  const client = getSupabaseClient();
+  const { data, error } = await client
     .from('patients')
     .select(`
       *,
@@ -32,7 +55,8 @@ export async function getPatientById(id: string) {
 }
 
 export async function getInvoices() {
-  const { data, error } = await supabase
+  const client = getSupabaseClient();
+  const { data, error } = await client
     .from('invoices')
     .select(`
       *,
@@ -47,7 +71,8 @@ export async function getInvoices() {
 }
 
 export async function getWebhookEvents() {
-  const { data, error } = await supabase
+  const client = getSupabaseClient();
+  const { data, error } = await client
     .from('webhook_events')
     .select('*')
     .order('received_at', { ascending: false })
@@ -58,7 +83,8 @@ export async function getWebhookEvents() {
 }
 
 export async function getPayments() {
-  const { data, error } = await supabase
+  const client = getSupabaseClient();
+  const { data, error } = await client
     .from('payments')
     .select(`
       *,
@@ -72,15 +98,16 @@ export async function getPayments() {
 }
 
 export async function getDashboardStats() {
+  const client = getSupabaseClient();
   const [patients, invoices, payments, webhooks] = await Promise.all([
-    supabase.from('patients').select('id', { count: 'exact', head: true }),
-    supabase.from('invoices').select('id', { count: 'exact', head: true }),
-    supabase.from('payments').select('id', { count: 'exact', head: true }),
-    supabase.from('webhook_events').select('id', { count: 'exact', head: true })
+    client.from('patients').select('id', { count: 'exact', head: true }),
+    client.from('invoices').select('id', { count: 'exact', head: true }),
+    client.from('payments').select('id', { count: 'exact', head: true }),
+    client.from('webhook_events').select('id', { count: 'exact', head: true })
   ]);
 
   // Get total balance
-  const { data: balanceData } = await supabase
+  const { data: balanceData } = await client
     .from('patients')
     .select('balance_cents');
   
@@ -97,7 +124,8 @@ export async function getDashboardStats() {
 
 // Real-time subscription helper
 export function subscribeToWebhookEvents(callback: (payload: any) => void) {
-  return supabase
+  const client = getSupabaseClient();
+  return client
     .channel('webhook_events')
     .on('postgres_changes', {
       event: 'INSERT',
