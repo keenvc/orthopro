@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { Pool } from 'pg';
 
 export async function POST(request: NextRequest) {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+
   try {
     // Simple auth check - in production, use proper authentication
     const authHeader = request.headers.get('authorization');
@@ -15,47 +18,54 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('Starting database migration...');
+    console.log('DATABASE_URL configured:', !!process.env.DATABASE_URL);
 
-    // Add mechanism_of_injury column
-    await prisma.$executeRawUnsafe(`
-      ALTER TABLE intake_submissions
-      ADD COLUMN IF NOT EXISTS mechanism_of_injury VARCHAR(50);
-    `);
+    const client = await pool.connect();
+    
+    try {
+      // Add mechanism_of_injury column
+      await client.query(`
+        ALTER TABLE intake_submissions
+        ADD COLUMN IF NOT EXISTS mechanism_of_injury VARCHAR(50);
+      `);
+      console.log('✓ Added mechanism_of_injury column');
 
-    // Add work_activity column
-    await prisma.$executeRawUnsafe(`
-      ALTER TABLE intake_submissions
-      ADD COLUMN IF NOT EXISTS work_activity VARCHAR(100);
-    `);
+      // Add work_activity column
+      await client.query(`
+        ALTER TABLE intake_submissions
+        ADD COLUMN IF NOT EXISTS work_activity VARCHAR(100);
+      `);
+      console.log('✓ Added work_activity column');
 
-    // Add index
-    await prisma.$executeRawUnsafe(`
-      CREATE INDEX IF NOT EXISTS idx_intake_mechanism 
-      ON intake_submissions(mechanism_of_injury);
-    `);
+      // Add index
+      await client.query(`
+        CREATE INDEX IF NOT EXISTS idx_intake_mechanism 
+        ON intake_submissions(mechanism_of_injury);
+      `);
+      console.log('✓ Created index on mechanism_of_injury');
 
-    // Verify columns exist
-    const columns = await prisma.$queryRawUnsafe<Array<{
-      column_name: string;
-      data_type: string;
-      character_maximum_length: number | null;
-    }>>(`
-      SELECT column_name, data_type, character_maximum_length 
-      FROM information_schema.columns 
-      WHERE table_name = 'intake_submissions' 
-        AND column_name IN ('mechanism_of_injury', 'work_activity')
-      ORDER BY column_name;
-    `);
+      // Verify columns exist
+      const result = await client.query(`
+        SELECT column_name, data_type, character_maximum_length 
+        FROM information_schema.columns 
+        WHERE table_name = 'intake_submissions' 
+          AND column_name IN ('mechanism_of_injury', 'work_activity')
+        ORDER BY column_name;
+      `);
 
-    console.log('Migration completed successfully');
-    console.log('Columns added:', columns);
+      console.log('Migration completed successfully');
+      console.log('Columns verified:', result.rows);
 
-    return NextResponse.json({
-      success: true,
-      message: 'Database migration applied successfully',
-      columns: columns,
-      timestamp: new Date().toISOString()
-    });
+      return NextResponse.json({
+        success: true,
+        message: 'Database migration applied successfully',
+        columns: result.rows,
+        timestamp: new Date().toISOString()
+      });
+
+    } finally {
+      client.release();
+    }
 
   } catch (error: any) {
     console.error('Migration error:', error);
@@ -64,11 +74,13 @@ export async function POST(request: NextRequest) {
         success: false,
         error: 'Migration failed', 
         details: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        code: error.code,
+        hint: error.hint,
+        hasDbUrl: !!process.env.DATABASE_URL
       },
       { status: 500 }
     );
   } finally {
-    await prisma.$disconnect();
+    await pool.end();
   }
 }
