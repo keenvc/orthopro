@@ -27,6 +27,14 @@ export function validateCredentials(email: string, password: string): boolean {
 }
 
 /**
+ * Get user role from credentials
+ */
+export function getUserRole(email: string): string {
+  const user = VALID_CREDENTIALS.find(cred => cred.email === email);
+  return user?.role || 'patient';
+}
+
+/**
  * Create a session token (simple base64 encoded JSON for demo purposes)
  * In production, use JWT with proper signing
  */

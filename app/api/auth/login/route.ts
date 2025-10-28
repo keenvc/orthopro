@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateCredentials, setSessionCookie } from '../../../../lib/auth';
+import { validateCredentials, setSessionCookie, getUserRole } from '../../../../lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,11 +21,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get user role from credentials
+    const role = getUserRole(email);
+
     // Create session
     await setSessionCookie(email);
 
     return NextResponse.json(
-      { success: true, email },
+      { success: true, email, role },
       { status: 200 }
     );
   } catch (error) {

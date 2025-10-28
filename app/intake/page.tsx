@@ -13,6 +13,8 @@ interface IntakeFormData {
   injuryDate: string;
   injuryTime: string;
   injuryLocation: string;
+  mechanismOfInjury: string;
+  workActivity: string;
   injuryDescription: string;
   employerName: string;
   claimNumber: string;
@@ -36,6 +38,8 @@ export default function IntakePage() {
     injuryDate: '',
     injuryTime: '',
     injuryLocation: '',
+    mechanismOfInjury: '',
+    workActivity: '',
     injuryDescription: '',
     employerName: '',
     claimNumber: '',
