@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import { getPool } from '../../../../lib/db';
 
 export async function POST(request: NextRequest) {
-  const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-  });
-
   try {
     // Simple auth check - in production, use proper authentication
     const authHeader = request.headers.get('authorization');
@@ -20,6 +15,7 @@ export async function POST(request: NextRequest) {
     console.log('Starting database migration...');
     console.log('DATABASE_URL configured:', !!process.env.DATABASE_URL);
 
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -80,7 +76,5 @@ export async function POST(request: NextRequest) {
       },
       { status: 500 }
     );
-  } finally {
-    await pool.end();
   }
 }

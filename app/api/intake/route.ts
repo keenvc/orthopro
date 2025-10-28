@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import { getPool } from '../../../lib/db';
 
 // Mock AI diagnosis generator with ICD-10 and CPT codes
 function generateMockDiagnoses(formData: any) {
@@ -320,18 +320,14 @@ function generateMockDiagnoses(formData: any) {
 }
 
 export async function POST(request: Request) {
-  const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-  });
-
   try {
     const body = await request.json();
     
     // Generate mock AI diagnoses
     const diagnoses = generateMockDiagnoses(body);
     
-    // Save to database using pg
+    // Save to database using pg pool
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -400,21 +396,15 @@ export async function POST(request: Request) {
       },
       { status: 500 }
     );
-  } finally {
-    await pool.end();
   }
 }
 
 export async function GET(request: Request) {
-  const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-  });
-
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -465,7 +455,5 @@ export async function GET(request: Request) {
       },
       { status: 500 }
     );
-  } finally {
-    await pool.end();
   }
 }
