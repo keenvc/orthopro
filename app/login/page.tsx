@@ -148,12 +148,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        {/* Footer */}
-        <div className="text-center mt-6">
-          <p className="text-sm text-gray-600">
-            Powered by Next.js and Supabase
-          </p>
-        </div>
+        {/* Footer removed */}
       </div>
     </div>
   );
