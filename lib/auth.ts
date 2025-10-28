@@ -3,14 +3,16 @@ import { cookies } from 'next/headers';
 const SESSION_COOKIE_NAME = 'ih_session';
 const SESSION_MAX_AGE = 60 * 60 * 24; // 24 hours
 
-// Hardcoded credentials
-const VALID_CREDENTIALS = {
-  email: 'nmurray@gmail.com',
-  password: 'VancouverBC1!'
-};
+// Hardcoded credentials - TODO: Replace with Supabase Auth
+const VALID_CREDENTIALS = [
+  { email: 'nmurray@gmail.com', password: 'VancouverBC1!', role: 'admin' },
+  { email: 'patient@orthopro.test', password: 'Test123!Patient', role: 'patient' },
+  { email: 'doctor@orthopro.test', password: 'Test123!Doctor', role: 'doctor' }
+];
 
 export interface SessionData {
   email: string;
+  role?: string;
   createdAt: number;
 }
 
@@ -18,8 +20,10 @@ export interface SessionData {
  * Validate user credentials
  */
 export function validateCredentials(email: string, password: string): boolean {
-  // Use constant-time comparison for password
-  return email === VALID_CREDENTIALS.email && password === VALID_CREDENTIALS.password;
+  // Check if credentials match any valid user
+  return VALID_CREDENTIALS.some(
+    cred => cred.email === email && cred.password === password
+  );
 }
 
 /**
@@ -27,8 +31,11 @@ export function validateCredentials(email: string, password: string): boolean {
  * In production, use JWT with proper signing
  */
 export function createSessionToken(email: string): string {
+  // Get role from credentials
+  const user = VALID_CREDENTIALS.find(cred => cred.email === email);
   const sessionData: SessionData = {
     email,
+    role: user?.role,
     createdAt: Date.now()
   };
   
