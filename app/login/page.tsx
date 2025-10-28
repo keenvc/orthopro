@@ -36,7 +36,7 @@ export default function LoginPage() {
 
       // Redirect based on role returned from API (not UI selection)
       if (data.role === 'doctor') {
-        router.push('/doctor/workspace');
+        router.push('/doctor');
       } else {
         router.push('/intake');
       }
