@@ -64,6 +64,7 @@ export default function ConfirmationScreen({ diagnoses, intakeData, intakeId }: 
               confidence={diagnosis.confidence}
               icd10={diagnosis.icd10}
               reasoning={diagnosis.reasoning}
+              cptCodes={diagnosis.cptCodes}
             />
           ))}
         </div>
@@ -120,7 +121,7 @@ export default function ConfirmationScreen({ diagnoses, intakeData, intakeId }: 
   );
 }
 
-function DiagnosisCard({ rank, diagnosis, confidence, icd10, reasoning }: any) {
+function DiagnosisCard({ rank, diagnosis, confidence, icd10, reasoning, cptCodes }: DiagnosisCardProps) {
   const getConfidenceColor = (conf: number) => {
     if (conf >= 0.8) return 'text-green-600 bg-green-100 border-green-300';
     if (conf >= 0.6) return 'text-yellow-600 bg-yellow-100 border-yellow-300';
@@ -165,4 +166,13 @@ function DiagnosisCard({ rank, diagnosis, confidence, icd10, reasoning }: any) {
       </div>
     </div>
   );
+}
+
+interface DiagnosisCardProps {
+  rank: number;
+  diagnosis: string;
+  confidence: number;
+  icd10: string;
+  reasoning: string;
+  cptCodes?: Array<{code: string, description: string}>;
 }

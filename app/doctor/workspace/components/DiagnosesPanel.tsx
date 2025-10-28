@@ -84,6 +84,30 @@ export default function DiagnosesPanel({ diagnoses }: DiagnosesPanelProps) {
                 </div>
               </div>
 
+              {/* CPT Codes */}
+              {diagnosis.cptCodes && diagnosis.cptCodes.length > 0 && (
+                <div className="mt-3 ml-11">
+                  <h5 className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
+                    💰 Recommended CPT Codes for Billing:
+                  </h5>
+                  <div className="space-y-1.5">
+                    {diagnosis.cptCodes.map((cpt: any, cptIdx: number) => (
+                      <div 
+                        key={cptIdx}
+                        className="flex items-start gap-2 text-xs bg-green-50 border border-green-200 rounded px-2 py-1.5"
+                      >
+                        <span className="font-mono font-bold text-green-800 min-w-[55px]">
+                          {cpt.code}
+                        </span>
+                        <span className="text-green-700">
+                          {cpt.description}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Selected Indicator */}
               {isSelected && (
                 <div className="mt-3 ml-11 flex items-center gap-2 text-blue-600">
