@@ -1,7 +1,8 @@
-import { supabase } from './supabase';
+import { getSupabaseClient } from './supabase';
 
 // CLINICAL NOTES
 export async function getClinicalNotes(patientId?: string) {
+  const supabase = getSupabaseClient();
   let query = supabase
     .from('clinical_notes')
     .select('*')
@@ -17,6 +18,7 @@ export async function getClinicalNotes(patientId?: string) {
 }
 
 export async function getClinicalNotesByClinic(clinicId: string = 'centered-one') {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('clinical_notes')
     .select(`
@@ -33,6 +35,7 @@ export async function getClinicalNotesByClinic(clinicId: string = 'centered-one'
 
 // PATIENT SURVEYS
 export async function getPatientSurveys(patientId?: string) {
+  const supabase = getSupabaseClient();
   let query = supabase
     .from('patient_surveys')
     .select('*')
@@ -48,6 +51,7 @@ export async function getPatientSurveys(patientId?: string) {
 }
 
 export async function getPatientSurveysByClinic(clinicId: string = 'centered-one') {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('patient_surveys')
     .select(`
@@ -63,6 +67,7 @@ export async function getPatientSurveysByClinic(clinicId: string = 'centered-one
 }
 
 export async function getHighRiskPatients(clinicId: string = 'centered-one') {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase.rpc('get_high_risk_patients', {
     p_clinic_id: clinicId
   });
@@ -73,6 +78,7 @@ export async function getHighRiskPatients(clinicId: string = 'centered-one') {
 
 // APPOINTMENTS
 export async function getAppointments(patientId?: string) {
+  const supabase = getSupabaseClient();
   let query = supabase
     .from('appointments')
     .select(`
@@ -92,6 +98,7 @@ export async function getAppointments(patientId?: string) {
 }
 
 export async function getUpcomingAppointments(clinicId: string = 'centered-one') {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('appointments')
     .select(`
@@ -110,6 +117,7 @@ export async function getUpcomingAppointments(clinicId: string = 'centered-one')
 }
 
 export async function getAppointmentStats(clinicId: string = 'centered-one') {
+  const supabase = getSupabaseClient();
   const { data: allAppt } = await supabase
     .from('appointments')
     .select('*', { count: 'exact', head: true })
@@ -136,6 +144,7 @@ export async function getAppointmentStats(clinicId: string = 'centered-one') {
 
 // PATIENT LLM CONTEXT
 export async function getPatientLLMContext(patientId: string) {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase.rpc('get_patient_llm_context', {
     p_patient_id: patientId
   });
@@ -146,6 +155,7 @@ export async function getPatientLLMContext(patientId: string) {
 
 // CLINIC DASHBOARD STATS
 export async function getClinicDashboardStats() {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('mv_clinic_dashboard_stats')
     .select('*')
@@ -158,6 +168,7 @@ export async function getClinicDashboardStats() {
 
 // MENTAL HEALTH STATUS
 export async function getPatientMentalHealthStatus(patientId: string) {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('v_patient_mental_health_status')
     .select('*')
@@ -169,6 +180,7 @@ export async function getPatientMentalHealthStatus(patientId: string) {
 }
 
 export async function getMentalHealthStatusList(clinicId: string = 'centered-one') {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('v_patient_mental_health_status')
     .select('*')
@@ -182,6 +194,7 @@ export async function getMentalHealthStatusList(clinicId: string = 'centered-one
 
 // SURVEY TRENDS
 export async function getSurveyTrends(patientId: string, surveyType: string) {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('patient_surveys')
     .select('score, completed_date, severity_level')
@@ -196,6 +209,7 @@ export async function getSurveyTrends(patientId: string, surveyType: string) {
 
 // CLINIC STATS
 export async function getClinicNoteStats(clinicId: string = 'centered-one') {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('clinical_notes')
     .select('note_type')

@@ -76,7 +76,7 @@ export default function Navigation({ userEmail = 'nmurray@gmail.com' }: Navigati
                 alt="AdvancedCare Logo" 
                 className="h-8 w-auto" 
               />
-              <h1 className="text-2xl font-bold text-gray-900">AdvancedCare - Centered Clinic</h1>
+              <h1 className="text-2xl font-bold text-gray-900">AdvancedCare - OrthoPro</h1>
             </div>
             <div className="flex items-center gap-4">
               {/* Status Indicator */}
