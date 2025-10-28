@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-// import { Client } from 'square';
 import nodemailer from 'nodemailer';
 import twilio from 'twilio';
 
-// Initialize Square client - Disabled for now due to SDK compatibility
-// TODO: Fix Square SDK import issue
-const squareClient: any = null;
+// Square API Configuration
+const SQUARE_API_BASE_URL = process.env.SQUARE_ENVIRONMENT === 'production' 
+  ? 'https://connect.squareup.com'
+  : 'https://connect.squareupsandbox.com';
 
 // Initialize MXRoute email transporter
 const transporter = nodemailer.createTransport({
@@ -81,68 +81,97 @@ export async function POST(req: NextRequest) {
     const idempotencyKey = `invoice-${patient_id}-${Date.now()}`;
 
     // Prepare invoice data
-    const invoiceData: any = {
-      idempotencyKey,
+    const invoiceData = {
+      idempotency_key: idempotencyKey,
       invoice: {
-        locationId,
-        orderId: undefined, // Can be set if you have an order
-        primaryRecipient: {
-          customerId: undefined, // You can create a customer first if needed
-          givenName: patient_name.split(' ')[0],
-          familyName: patient_name.split(' ').slice(1).join(' ') || patient_name.split(' ')[0],
-          emailAddress: patient_email || undefined,
-          phoneNumber: patient_phone || undefined,
+        location_id: locationId,
+        primary_recipient: {
+          given_name: patient_name.split(' ')[0],
+          family_name: patient_name.split(' ').slice(1).join(' ') || patient_name.split(' ')[0],
+          email_address: patient_email || undefined,
+          phone_number: patient_phone || undefined,
         },
-        paymentRequests: [
+        payment_requests: [
           {
-            requestType: 'BALANCE',
-            dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            request_type: 'BALANCE',
+            due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
               .toISOString()
               .split('T')[0], // 7 days from now
-            automaticPaymentSource: 'NONE',
+            automatic_payment_source: 'NONE',
           },
         ],
-        deliveryMethod: 'EMAIL', // Square will send their own notification
-        invoiceNumber: `COPAY-${Date.now()}`,
+        delivery_method: 'EMAIL',
+        invoice_number: `COPAY-${Date.now()}`,
         title: 'Co-Pay Invoice',
         description: `Co-pay payment for ${patient_name}`,
-        scheduledAt: new Date().toISOString(),
-        acceptedPaymentMethods: {
+        scheduled_at: new Date().toISOString(),
+        accepted_payment_methods: {
           card: true,
-          squareGiftCard: false,
-          bankAccount: false,
+          square_gift_card: false,
+          bank_account: false,
         },
       },
-      lineItems: [
-        {
-          name: 'Co-Pay',
-          quantity: '1',
-          basePriceMoney: {
-            amount: BigInt(Math.round(amount * 100)), // Convert to cents
-            currency: 'USD',
-          },
-        },
-      ],
     };
 
-    // Create the invoice
-    const invoiceResponse = await squareClient.invoicesApi.createInvoice(invoiceData);
+    // Create the invoice via REST API
+    const createResponse = await fetch(`${SQUARE_API_BASE_URL}/v2/invoices`, {
+      method: 'POST',
+      headers: {
+        'Square-Version': '2024-12-18',
+        'Authorization': `Bearer ${process.env.SQUARE_ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...invoiceData,
+        order: {
+          location_id: locationId,
+          line_items: [
+            {
+              name: 'Co-Pay',
+              quantity: '1',
+              base_price_money: {
+                amount: Math.round(amount * 100), // Convert to cents
+                currency: 'USD',
+              },
+            },
+          ],
+        },
+      }),
+    });
 
-    if (!invoiceResponse.result.invoice) {
-      throw new Error('Failed to create invoice');
+    if (!createResponse.ok) {
+      const errorData = await createResponse.json();
+      console.error('Square API error:', errorData);
+      throw new Error(errorData.errors?.[0]?.detail || 'Failed to create invoice');
     }
 
-    const invoice = invoiceResponse.result.invoice;
+    const createData = await createResponse.json();
+    const invoice = createData.invoice;
     console.log('Square invoice created:', invoice.id);
 
     // Publish the invoice (makes it viewable and payable)
-    const publishResponse = await squareClient.invoicesApi.publishInvoice(invoice.id!, {
-      version: invoice.version!,
-      idempotencyKey: `publish-${idempotencyKey}`,
+    const publishResponse = await fetch(`${SQUARE_API_BASE_URL}/v2/invoices/${invoice.id}/publish`, {
+      method: 'POST',
+      headers: {
+        'Square-Version': '2024-12-18',
+        'Authorization': `Bearer ${process.env.SQUARE_ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: invoice.version,
+        idempotency_key: `publish-${idempotencyKey}`,
+      }),
     });
 
-    const publishedInvoice = publishResponse.result.invoice;
-    const invoiceUrl = publishedInvoice?.publicUrl || '#';
+    if (!publishResponse.ok) {
+      const errorData = await publishResponse.json();
+      console.error('Square publish error:', errorData);
+      throw new Error(errorData.errors?.[0]?.detail || 'Failed to publish invoice');
+    }
+
+    const publishData = await publishResponse.json();
+    const publishedInvoice = publishData.invoice;
+    const invoiceUrl = publishedInvoice?.public_url || '#';
 
     console.log('Invoice published:', invoiceUrl);
 
@@ -199,7 +228,7 @@ export async function POST(req: NextRequest) {
   
   <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
     <p style="margin: 5px 0;">This is an automated message. Please do not reply to this email.</p>
-    <p style="margin: 5px 0;">Invoice #${publishedInvoice?.invoiceNumber || 'N/A'}</p>
+    <p style="margin: 5px 0;">Invoice #${publishedInvoice?.invoice_number || 'N/A'}</p>
   </div>
 </body>
 </html>
@@ -252,7 +281,7 @@ export async function POST(req: NextRequest) {
       success: true,
       invoice_id: invoice.id,
       invoice_url: invoiceUrl,
-      invoice_number: publishedInvoice?.invoiceNumber,
+      invoice_number: publishedInvoice?.invoice_number,
       amount: amount,
       email_sent: send_email && patient_email ? true : false,
       text_sent: send_text && patient_phone && process.env.TWILIO_ACCOUNT_SID ? true : false,
