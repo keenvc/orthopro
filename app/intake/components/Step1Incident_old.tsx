@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { ArrowRight, Calendar, Clock, MapPin, Briefcase, FileText, AlertTriangle, RefreshCw, FileAudio } from 'lucide-react';
+import { ArrowRight, Calendar, Clock, MapPin, Briefcase, FileText, AlertTriangle } from 'lucide-react';
 
 interface Step1Props {
   data: any;
@@ -32,90 +31,16 @@ const activityOptions = [
 ];
 
 export default function Step1Incident({ data, onChange, onNext }: Step1Props) {
-  const [syncing, setSyncing] = useState(false);
-
   const handleChange = (field: string, value: string) => {
     onChange({ ...data, [field]: value });
   };
 
-  const handleSyncTranscript = () => {
-    if (!data.transcript || data.transcript.trim() === '') {
-      alert('Please enter a transcript first');
-      return;
-    }
-
-    setSyncing(true);
-    // Simulate AI processing - in production, this would call an AI API
-    setTimeout(() => {
-      // Simple extraction logic - in production use AI
-      const transcript = data.transcript.toLowerCase();
-      
-      // Extract date mentions
-      const dateMatch = transcript.match(/(\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2}|yesterday|today)/);
-      if (dateMatch && !data.injuryDate) {
-        const today = new Date().toISOString().split('T')[0];
-        handleChange('injuryDate', today);
-      }
-
-      // Extract location mentions
-      const locationKeywords = ['warehouse', 'office', 'construction site', 'factory', 'building', 'site'];
-      for (const keyword of locationKeywords) {
-        if (transcript.includes(keyword) && !data.injuryLocation) {
-          handleChange('injuryLocation', keyword.charAt(0).toUpperCase() + keyword.slice(1));
-          break;
-        }
-      }
-
-      // Copy transcript to description if empty
-      if (!data.injuryDescription) {
-        handleChange('injuryDescription', data.transcript);
-      }
-
-      setSyncing(false);
-      alert('Transcript synced! Please review and adjust the extracted information.');
-    }, 1500);
-  };
-
   const isValid = () => {
-    const baseValid = data.injuryDate && data.injuryLocation && data.injuryDescription && data.mechanismOfInjury;
-    // If "other" is selected, require otherMechanismDetails
-    if (data.mechanismOfInjury === 'other') {
-      return baseValid && data.otherMechanismDetails;
-    }
-    return baseValid;
+    return data.injuryDate && data.injuryLocation && data.injuryDescription && data.mechanismOfInjury;
   };
 
   return (
     <div className="bg-white rounded-lg shadow-xl p-8">
-      {/* Transcript Section */}
-      <div className="mb-8 pb-6 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-3">
-          <label className="block text-lg font-semibold text-gray-900 flex items-center">
-            <FileAudio className="w-5 h-5 mr-2 text-blue-600" />
-            Transcript
-          </label>
-          <button
-            type="button"
-            onClick={handleSyncTranscript}
-            disabled={syncing || !data.transcript}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed text-sm font-medium"
-          >
-            <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
-            {syncing ? 'Syncing...' : 'Sync'}
-          </button>
-        </div>
-        <textarea
-          value={data.transcript || ''}
-          onChange={(e) => handleChange('transcript', e.target.value)}
-          rows={6}
-          placeholder="Paste or enter the diarized transcript of the patient intake conversation here. Click 'Sync' to automatically extract information into the form fields below..."
-          className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
-        />
-        <p className="mt-2 text-sm text-gray-500">
-          Optional: Enter conversation transcript and click Sync to auto-populate fields
-        </p>
-      </div>
-
       <h2 className="text-2xl font-bold text-gray-900 mb-6">
         Step 1: Incident Details
       </h2>
@@ -192,23 +117,6 @@ export default function Step1Incident({ data, onChange, onNext }: Step1Props) {
             ))}
           </div>
         </div>
-
-        {/* Other/Multiple Details - Conditional */}
-        {data.mechanismOfInjury === 'other' && (
-          <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Other/Multiple Details *
-            </label>
-            <input
-              type="text"
-              value={data.otherMechanismDetails || ''}
-              onChange={(e) => handleChange('otherMechanismDetails', e.target.value)}
-              placeholder="Please describe the mechanism of injury in detail..."
-              className="w-full border border-yellow-400 rounded-lg p-3 text-gray-900 focus:ring-2 focus:ring-yellow-500 focus:border-transparent bg-white"
-              required
-            />
-          </div>
-        )}
 
         {/* Work Activity */}
         <div>

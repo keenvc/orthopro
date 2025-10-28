@@ -58,7 +58,7 @@ export default function Step2History({ data, onChange, onNext, onBack }: Step2Pr
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
             <AlertTriangle className="w-4 h-4 mr-2 text-red-600" />
-            Allergies (Important!)
+            Allergies (Required)
           </label>
           <textarea
             value={data.allergies}
@@ -68,7 +68,7 @@ export default function Step2History({ data, onChange, onNext, onBack }: Step2Pr
             className="w-full border border-red-300 rounded-lg p-3 text-gray-900 focus:ring-2 focus:ring-red-500 focus:border-transparent bg-red-50"
           />
           <p className="mt-1 text-sm text-red-600 font-medium">
-            Please list all known allergies. This is critical for your safety.
+            Please list all known allergies.
           </p>
         </div>
 

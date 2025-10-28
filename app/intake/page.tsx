@@ -9,11 +9,14 @@ import Step3Symptoms from './components/Step3Symptoms';
 import ConfirmationScreen from './components/ConfirmationScreen';
 
 interface IntakeFormData {
+  // Transcript
+  transcript: string;
   // Step 1
   injuryDate: string;
   injuryTime: string;
   injuryLocation: string;
   mechanismOfInjury: string;
+  otherMechanismDetails: string;
   workActivity: string;
   injuryDescription: string;
   employerName: string;
@@ -34,11 +37,14 @@ export default function IntakePage() {
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
   const [formData, setFormData] = useState<IntakeFormData>({
+    // Transcript
+    transcript: '',
     // Step 1
     injuryDate: '',
     injuryTime: '',
     injuryLocation: '',
     mechanismOfInjury: '',
+    otherMechanismDetails: '',
     workActivity: '',
     injuryDescription: '',
     employerName: '',
