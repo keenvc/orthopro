@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSupabaseClient } from '../../../lib/supabase';
+import { Pool } from 'pg';
 
 // Mock AI diagnosis generator with ICD-10 and CPT codes
 function generateMockDiagnoses(formData: any) {
@@ -320,94 +320,140 @@ function generateMockDiagnoses(formData: any) {
 }
 
 export async function POST(request: Request) {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+
   try {
     const body = await request.json();
     
     // Generate mock AI diagnoses
     const diagnoses = generateMockDiagnoses(body);
     
-    // Save to database
-    const supabase = getSupabaseClient();
-    const { data, error } = await supabase
-      .from('intake_submissions')
-      .insert({
-        injury_date: body.injuryDate,
-        injury_time: body.injuryTime,
-        injury_location: body.injuryLocation,
-        injury_description: body.injuryDescription,
-        mechanism_of_injury: body.mechanismOfInjury,
-        work_activity: body.workActivity,
-        employer_name: body.employerName,
-        workers_comp_claim_number: body.claimNumber,
-        previous_injuries: body.previousInjuries,
-        current_medications: body.currentMedications,
-        allergies: body.allergies,
-        medical_history: body.medicalHistory,
-        pain_level: body.painLevel,
-        symptoms: body.symptoms,
-        affected_body_parts: body.affectedBodyParts,
-        ai_diagnoses: diagnoses,
-        status: 'pending'
-      })
-      .select()
-      .single();
+    // Save to database using pg
+    const client = await pool.connect();
     
-    if (error) {
-      console.error('Database error:', error);
-      throw error;
+    try {
+      const result = await client.query(`
+        INSERT INTO intake_submissions (
+          injury_date,
+          injury_time,
+          injury_location,
+          injury_description,
+          mechanism_of_injury,
+          work_activity,
+          employer_name,
+          workers_comp_claim_number,
+          previous_injuries,
+          current_medications,
+          allergies,
+          medical_history,
+          pain_level,
+          symptoms,
+          affected_body_parts,
+          ai_diagnoses,
+          status,
+          submitted_at
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, NOW()
+        ) RETURNING id
+      `, [
+        body.injuryDate || null,
+        body.injuryTime || null,
+        body.injuryLocation || null,
+        body.injuryDescription || null,
+        body.mechanismOfInjury || null,
+        body.workActivity || null,
+        body.employerName || null,
+        body.claimNumber || null,
+        body.previousInjuries || null,
+        body.currentMedications || null,
+        body.allergies || null,
+        body.medicalHistory || null,
+        body.painLevel || null,
+        body.symptoms || null,
+        body.affectedBodyParts || null,
+        JSON.stringify(diagnoses),
+        'pending'
+      ]);
+      
+      const intakeId = result.rows[0].id;
+      
+      return NextResponse.json({
+        success: true,
+        intakeId: intakeId,
+        diagnoses: diagnoses,
+        message: 'Intake submitted successfully'
+      });
+    } finally {
+      client.release();
     }
-    
-    return NextResponse.json({
-      success: true,
-      intakeId: data.id,
-      diagnoses: diagnoses,
-      message: 'Intake submitted successfully'
-    });
   } catch (error: any) {
     console.error('Intake submission error:', error);
     return NextResponse.json(
       { 
         success: false,
         error: 'Failed to submit intake',
-        details: error.message 
+        details: error.message,
+        hasDbUrl: !!process.env.DATABASE_URL
       },
       { status: 500 }
     );
+  } finally {
+    await pool.end();
   }
 }
 
 export async function GET(request: Request) {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     
-    const supabase = getSupabaseClient();
+    const client = await pool.connect();
     
-    if (id) {
-      // Get specific intake
-      const { data, error } = await supabase
-        .from('intake_submissions')
-        .select('*')
-        .eq('id', id)
-        .single();
-      
-      if (error) throw error;
-      
-      return NextResponse.json({ success: true, data });
-    } else {
-      // Get all intakes (with pagination)
-      const limit = parseInt(searchParams.get('limit') || '20');
-      const offset = parseInt(searchParams.get('offset') || '0');
-      
-      const { data, error, count } = await supabase
-        .from('intake_submissions')
-        .select('*', { count: 'exact' })
-        .order('submitted_at', { ascending: false })
-        .range(offset, offset + limit - 1);
-      
-      if (error) throw error;
-      
-      return NextResponse.json({ success: true, data, total: count });
+    try {
+      if (id) {
+        // Get specific intake
+        const result = await client.query(
+          'SELECT * FROM intake_submissions WHERE id = $1',
+          [id]
+        );
+        
+        if (result.rows.length === 0) {
+          return NextResponse.json(
+            { success: false, error: 'Intake not found' },
+            { status: 404 }
+          );
+        }
+        
+        return NextResponse.json({ success: true, data: result.rows[0] });
+      } else {
+        // Get all intakes (with pagination)
+        const limit = parseInt(searchParams.get('limit') || '20');
+        const offset = parseInt(searchParams.get('offset') || '0');
+        
+        const countResult = await client.query('SELECT COUNT(*) FROM intake_submissions');
+        const total = parseInt(countResult.rows[0].count);
+        
+        const dataResult = await client.query(
+          'SELECT * FROM intake_submissions ORDER BY submitted_at DESC LIMIT $1 OFFSET $2',
+          [limit, offset]
+        );
+        
+        return NextResponse.json({ 
+          success: true, 
+          data: dataResult.rows, 
+          total: total 
+        });
+      }
+    } finally {
+      client.release();
     }
   } catch (error: any) {
     console.error('Intake fetch error:', error);
@@ -419,5 +465,7 @@ export async function GET(request: Request) {
       },
       { status: 500 }
     );
+  } finally {
+    await pool.end();
   }
 }
