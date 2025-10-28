@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Webhook } from 'lucide-react';
+import { Users, Stethoscope } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'patient' | 'doctor'>('patient');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, role }),
       });
 
       const data = await response.json();
@@ -33,8 +34,12 @@ export default function LoginPage() {
         return;
       }
 
-      // Redirect to dashboard
-      router.push('/');
+      // Redirect based on role
+      if (role === 'doctor') {
+        router.push('/doctor');
+      } else {
+        router.push('/intake');
+      }
       router.refresh();
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -63,6 +68,38 @@ export default function LoginPage() {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Sign In</h2>
           
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Role Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                I am a:
+              </label>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setRole('patient')}
+                  className={`p-4 border-2 rounded-lg transition ${
+                    role === 'patient'
+                      ? 'border-blue-600 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <Users className="w-8 h-8 mx-auto mb-2 text-gray-700" />
+                  <span className="font-medium text-gray-900">Patient/Client</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('doctor')}
+                  className={`p-4 border-2 rounded-lg transition ${
+                    role === 'doctor'
+                      ? 'border-blue-600 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <Stethoscope className="w-8 h-8 mx-auto mb-2 text-gray-700" />
+                  <span className="font-medium text-gray-900">Doctor/Provider</span>
+                </button>
+              </div>
+            </div>
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 text-sm">
                 {error}
