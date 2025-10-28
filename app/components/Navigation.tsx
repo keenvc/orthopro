@@ -199,6 +199,26 @@ export default function Navigation({ userEmail = 'nmurray@gmail.com' }: Navigati
             >
               Clinic
             </Link>
+            <Link
+              href="/rcm/eligibility"
+              className={`border-b-2 px-3 py-3 text-sm font-medium transition ${
+                pathname.startsWith('/rcm')
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              RCM
+            </Link>
+            <Link
+              href="/settings"
+              className={`border-b-2 px-3 py-3 text-sm font-medium transition ${
+                pathname === '/settings'
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Settings
+            </Link>
           </div>
         </div>
       </nav>
