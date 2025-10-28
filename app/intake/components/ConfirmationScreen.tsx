@@ -76,21 +76,29 @@ export default function ConfirmationScreen({ diagnoses, intakeData, intakeId }: 
         <ol className="space-y-2 text-sm text-blue-800">
           <li className="flex items-start">
             <span className="font-bold mr-2">1.</span>
-            <span>Your intake has been routed to our medical team for review</span>
+            <span><strong>Nurse Physical Exam</strong> - Initial assessment of injury</span>
           </li>
           <li className="flex items-start">
             <span className="font-bold mr-2">2.</span>
-            <span>A doctor will examine your case and the AI-suggested diagnoses</span>
+            <span><strong>MRI/X-rays (if needed)</strong> - Imaging to confirm diagnosis</span>
           </li>
           <li className="flex items-start">
             <span className="font-bold mr-2">3.</span>
-            <span>You will be contacted within 24-48 hours with next steps</span>
+            <span><strong>Orthopedic Review</strong> - Final diagnosis and treatment plan</span>
           </li>
           <li className="flex items-start">
             <span className="font-bold mr-2">4.</span>
-            <span>Check your email for appointment scheduling and further instructions</span>
+            <span>You will be contacted with appointment scheduling and next steps</span>
           </li>
         </ol>
+      </div>
+
+      {/* Clinical Staff Access Note */}
+      <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+        <p className="text-sm text-purple-900">
+          <strong>For Clinical Staff:</strong> This intake is now ready for the Nurse Physical Exam.
+          Access the clinical pipeline from the doctor dashboard.
+        </p>
       </div>
 
       {/* Route to Doctor CTA */}
