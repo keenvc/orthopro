@@ -6,8 +6,8 @@ const SESSION_MAX_AGE = 60 * 60 * 24; // 24 hours
 // Hardcoded credentials - TODO: Replace with Supabase Auth
 const VALID_CREDENTIALS = [
   { email: 'nmurray@gmail.com', password: 'VancouverBC1!', role: 'admin' },
-  { email: 'patient@orthopro.test', password: 'Test123!Patient', role: 'patient' },
-  { email: 'doctor@orthopro.test', password: 'Test123!Doctor', role: 'doctor' }
+  { email: 'patient@orthopro.test', password: 'test123', role: 'patient' },
+  { email: 'doctor@orthopro.test', password: 'test123', role: 'doctor' }
 ];
 
 export interface SessionData {

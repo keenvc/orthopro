@@ -5,8 +5,19 @@ let pool: Pool | null = null;
 
 export function getPool(): Pool {
   if (!pool) {
+    const dbUrl = process.env.DATABASE_URL;
+    
+    if (!dbUrl) {
+      throw new Error('DATABASE_URL environment variable is not set');
+    }
+    
+    // Check if DATABASE_URL looks valid (contains password)
+    if (!dbUrl.includes(':') || dbUrl.split('@').length < 2) {
+      throw new Error('DATABASE_URL appears to be incomplete or malformed');
+    }
+    
     pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: dbUrl,
       ssl: { rejectUnauthorized: false },
       max: 20,
       idleTimeoutMillis: 30000,
@@ -17,6 +28,8 @@ export function getPool(): Pool {
     pool.on('error', (err) => {
       console.error('Unexpected error on idle client', err);
     });
+    
+    console.log('Database pool initialized');
   }
 
   return pool;
