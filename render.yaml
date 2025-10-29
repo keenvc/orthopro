@@ -37,6 +37,12 @@ services:
         fromDatabase:
           name: orthopro-db
           property: connectionString
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://dexrzialcqbedwvgfkfc.supabase.co
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRleHJ6aWFsY3FiZWR3dmdma2ZjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTE0MzY0NiwiZXhwIjoyMDc2NzE5NjQ2fQ.5kv2Fg7I0aZrrJVgCHv7oKUTOt-nnvETx4zzPzNQicU
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRleHJ6aWFsY3FiZWR3dmdma2ZjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTE0MzY0NiwiZXhwIjoyMDc2NzE5NjQ2fQ.5kv2Fg7I0aZrrJVgCHv7oKUTOt-nnvETx4zzPzNQicU
       - key: CLINIC_NAME
         value: OrthoPro
       - key: MXROUTE_EMAIL
