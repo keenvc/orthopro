@@ -65,17 +65,34 @@ export default function IntakePage() {
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      const response = await fetch('/api/intake', {
+      // Try primary intake API first
+      let response = await fetch('/api/intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
+      
+      // If primary API fails with 500, try mock API as fallback
+      if (!response.ok && response.status === 500) {
+        console.warn('Primary intake API failed, trying mock API...');
+        response = await fetch('/api/intake-mock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+      }
       
       if (!response.ok) {
         throw new Error('Failed to submit intake');
       }
       
       const result = await response.json();
+      
+      // Show warning if using mock mode
+      if (result.mock) {
+        console.warn('⚠️ Using MOCK MODE - Data not saved to database');
+      }
+      
       setAiDiagnoses(result.diagnoses);
       setIntakeId(result.intakeId);
       setCurrentStep(4); // Confirmation screen
