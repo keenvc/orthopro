@@ -468,3 +468,69 @@ model osmind_insurance_cards {
   @@index([member_id])
   @@index([synced_at])
 }
+
+// ============================================
+// DEPLOYMENT MONITORING TABLES
+// ============================================
+
+model deployments {
+  id                  String              @id @default(uuid()) @db.Uuid
+  name                String              @unique
+  display_name        String
+  url                 String
+  health_check_url    String?
+  platform            String              @default("render")
+  repository_url      String?
+  branch              String              @default("main")
+  status              String              @default("unknown")
+  last_deployed_at    DateTime?           @db.Timestamptz
+  last_health_check   DateTime?           @db.Timestamptz
+  health_status       String              @default("unknown")
+  environment         String              @default("production")
+  notes               String?
+  metadata            Json?
+  created_at          DateTime            @default(now()) @db.Timestamptz
+  updated_at          DateTime            @updatedAt @db.Timestamptz
+  
+  deployment_logs     deployment_logs[]
+  deployment_stats    deployment_stats[]
+  
+  @@index([name])
+  @@index([status])
+  @@index([health_status])
+  @@index([last_deployed_at])
+}
+
+model deployment_logs {
+  id              String     @id @default(uuid()) @db.Uuid
+  deployment_id   String     @db.Uuid
+  log_type        String
+  message         String
+  metadata        Json?
+  created_at      DateTime   @default(now()) @db.Timestamptz
+  
+  deployment      deployments @relation(fields: [deployment_id], references: [id], onDelete: Cascade)
+  
+  @@index([deployment_id])
+  @@index([log_type])
+  @@index([created_at])
+}
+
+model deployment_stats {
+  id                  String     @id @default(uuid()) @db.Uuid
+  deployment_id       String     @db.Uuid
+  stat_date           DateTime   @db.Date
+  uptime_percentage   Decimal?   @db.Decimal(5, 2)
+  response_time_ms    Int?
+  error_count         Int        @default(0)
+  success_count       Int        @default(0)
+  total_requests      Int        @default(0)
+  metadata            Json?
+  created_at          DateTime   @default(now()) @db.Timestamptz
+  
+  deployment          deployments @relation(fields: [deployment_id], references: [id], onDelete: Cascade)
+  
+  @@unique([deployment_id, stat_date])
+  @@index([deployment_id])
+  @@index([stat_date])
+}

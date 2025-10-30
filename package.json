@@ -30,7 +30,6 @@
     "lucide-react": "^0.546.0",
     "next": "14.2.0",
     "nodemailer": "^7.0.10",
-    "pg": "^8.11.3",
     "postcss": "^8",
     "react": "^18",
     "react-dom": "^18",
@@ -40,9 +39,11 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@types/pg": "^8.15.6",
     "csv-parse": "^6.1.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.0",
+    "pg": "^8.16.3",
     "prisma": "^6.18.0",
     "tsx": "^4.20.6"
   }
