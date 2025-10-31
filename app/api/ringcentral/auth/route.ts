@@ -6,7 +6,6 @@ const JWT_TOKEN = process.env.RINGCENTRAL_JWT!;
 
 export async function GET() {
   try {
-    // Exchange JWT for access token
     const auth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
     
     const response = await fetch('https://platform.ringcentral.com/restapi/oauth/token', {
