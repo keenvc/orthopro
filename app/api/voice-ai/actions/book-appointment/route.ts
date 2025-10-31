@@ -8,6 +8,8 @@ import { getGHLClient } from '../../../../../lib/ghl';
 
 const CENTERED_LOCATION_ID = 'tjZJ0hbW7tD1I21hCS41';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const {

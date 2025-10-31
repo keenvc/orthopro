@@ -6,6 +6,8 @@
 import { NextResponse } from 'next/server';
 import { getGHLClient, GHL_CONFIG } from '../../../../../lib/ghl';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const { service_type, preferred_date, preferred_time } = await request.json();

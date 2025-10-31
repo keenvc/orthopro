@@ -6,6 +6,8 @@
 import { NextResponse } from 'next/server';
 import { queryKnowledgeBase } from '../../../../../lib/firecrawl/centered-scraper';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const { query } = await request.json();
