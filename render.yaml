@@ -9,8 +9,8 @@ services:
     runtime: node
     region: oregon
     plan: starter
-    # Optimized build command: use npm ci for faster, more reliable installs
-    buildCommand: npm ci --prefer-offline --no-audit && npx prisma generate && npm run build
+    # Simplified build command - prisma generate runs in postinstall
+    buildCommand: npm ci --prefer-offline --no-audit && npm run build
     startCommand: npm start
     healthCheckPath: /
     # Build optimization
