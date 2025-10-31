@@ -4,12 +4,12 @@
  */
 
 import { getGHLClient, GHL_CONFIG } from './client';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseClient } from '../supabase';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-);
+// Lazy getter for Supabase client
+function getSupabase() {
+  return getSupabaseClient();
+}
 
 export interface PatientData {
   id: string;
