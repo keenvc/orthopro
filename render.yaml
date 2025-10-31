@@ -61,6 +61,12 @@ services:
         sync: false # Set manually in Render dashboard
       - key: MXROUTE_USERNAME
         value: orthopro@advancedcare.co
+      - key: RINGCENTRAL_CLIENT_ID
+        sync: false # Set manually in Render dashboard
+      - key: RINGCENTRAL_CLIENT_SECRET
+        sync: false # Set manually in Render dashboard
+      - key: RINGCENTRAL_JWT
+        sync: false # Set manually in Render dashboard
     domains:
       - orthopro.advancedcare.co
 

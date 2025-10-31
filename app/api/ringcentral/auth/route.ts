@@ -1,10 +1,20 @@
 import { NextResponse } from 'next/server';
 
-const CLIENT_ID = process.env.RINGCENTRAL_CLIENT_ID!;
-const CLIENT_SECRET = process.env.RINGCENTRAL_CLIENT_SECRET!;
-const JWT_TOKEN = process.env.RINGCENTRAL_JWT!;
+// Force dynamic rendering to prevent build-time errors
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  const CLIENT_ID = process.env.RINGCENTRAL_CLIENT_ID;
+  const CLIENT_SECRET = process.env.RINGCENTRAL_CLIENT_SECRET;
+  const JWT_TOKEN = process.env.RINGCENTRAL_JWT;
+
+  // Return error if credentials are not configured
+  if (!CLIENT_ID || !CLIENT_SECRET || !JWT_TOKEN) {
+    return NextResponse.json(
+      { error: 'RingCentral credentials not configured' },
+      { status: 503 }
+    );
+  }
   try {
     const auth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
     
