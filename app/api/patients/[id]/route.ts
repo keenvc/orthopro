@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getPatientById } from '../../../../lib/database';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }

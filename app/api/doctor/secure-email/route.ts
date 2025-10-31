@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getSupabaseClient } from '../../../../lib/supabase';
 
 // Stub endpoint for Paubox Secure Email
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();

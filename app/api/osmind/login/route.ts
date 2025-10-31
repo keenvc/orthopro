@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { osmindClient } from '../../../../lib/osmind/client';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json();

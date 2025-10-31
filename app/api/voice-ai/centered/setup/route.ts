@@ -8,6 +8,8 @@
 import { NextResponse } from 'next/server';
 import { CenteredVoiceAgent } from '../../../../../lib/ghl/centered-voice-agent';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     console.log('🚀 Starting Centered Voice AI Agent setup...');

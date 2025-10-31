@@ -28,6 +28,8 @@ function convertToCSV(data: any[], type: string): string {
   return csvRows.join('\n');
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();

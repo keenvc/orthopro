@@ -8,6 +8,8 @@
 import { NextResponse } from 'next/server';
 import { queryKnowledgeBase, getCenteredBusinessInfo } from '../../../../lib/firecrawl/centered-scraper';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const { query, type } = await request.json();

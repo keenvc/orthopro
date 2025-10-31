@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { osmindClient } from '../../../../lib/osmind/client';
 import { runCompleteSyncxmd } from '../../../../lib/osmind/sync';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const { username, password, startDate, endDate } = await request.json();
