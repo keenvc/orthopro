@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 /**
  * Mock Intake API - Fallback when database is unavailable
  * This allows testing the full intake flow without database connection

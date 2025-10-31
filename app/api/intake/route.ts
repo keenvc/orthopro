@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getPool } from '../../../lib/db';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 // Mock AI diagnosis generator with ICD-10 and CPT codes
 function generateMockDiagnoses(formData: any) {
   const { symptoms, affectedBodyParts, painLevel, mechanismOfInjury } = formData;
