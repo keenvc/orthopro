@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
+import dynamic from "next/dynamic";
 import "./globals.css";
+
+// Load RingCentral phone dynamically (client-side only)
+const RingCentralPhone = dynamic(() => import("./components/RingCentralPhone"), {
+  ssr: false,
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
