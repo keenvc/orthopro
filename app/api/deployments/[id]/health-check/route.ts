@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Lazy-load Prisma client
+function getPrisma() {
+  return new PrismaClient();
+}
 
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    const prisma = getPrisma();
     const deployment = await prisma.deployments.findUnique({
       where: { id: params.id },
     });

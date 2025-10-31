@@ -4,10 +4,14 @@ import { PrismaClient } from '@prisma/client';
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
-const prisma = new PrismaClient();
+// Lazy-load Prisma client to avoid build-time initialization
+function getPrisma() {
+  return new PrismaClient();
+}
 
 export async function GET() {
   try {
+    const prisma = getPrisma();
     const deployments = await prisma.deployments.findMany({
       include: {
         deployment_logs: {
@@ -31,6 +35,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const prisma = getPrisma();
     const body = await request.json();
     
     const deployment = await prisma.deployments.create({
