@@ -32,11 +32,6 @@ export default function RootLayout({
             `
           }}
         />
-        <Script
-          id="ringcentral-phone"
-          strategy="lazyOnload"
-          src="https://apps.ringcentral.com/integration/ringcentral-embeddable/2.x/adapter.js"
-        />
       </head>
       <body className={inter.className}>{children}</body>
     </html>
