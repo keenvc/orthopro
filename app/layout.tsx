@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
-import dynamic from "next/dynamic";
 import "./globals.css";
-
-// Load RingCentral phone dynamically (client-side only)
-const RingCentralPhone = dynamic(() => import("./components/RingCentralPhone"), {
-  ssr: false,
-});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,10 +38,7 @@ export default function RootLayout({
           src="https://apps.ringcentral.com/integration/ringcentral-embeddable/2.x/adapter.js"
         />
       </head>
-      <body className={inter.className}>
-        {children}
-        <RingCentralPhone />
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
